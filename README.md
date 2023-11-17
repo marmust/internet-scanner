@@ -21,6 +21,4 @@ To open the Unity Project:
 5. Navigate to where you put your graph renderer unity project` directory and select it. (GitHub will download the folder as a `.zip` so you'll have to unzip it first.
 6. Have fun!
 
-Don't let a new language daunt you. Unity is very well documented so you shouldn't have any issues looking up stuff online (or I guess now, asking ChatGPT lol).
-
 * readmy by: Joey451-OG
