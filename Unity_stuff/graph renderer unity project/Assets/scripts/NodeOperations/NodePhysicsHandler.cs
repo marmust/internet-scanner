@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-public class node_physics_handler : MonoBehaviour
+public class NodePhysicsHandler : MonoBehaviour
 {
     // i wont explain all this
-    public node_structure_handler structure_handler;
-    public var_holder vars;
+    public NodeStructureHandler structure_handler;
+    public VarHolder vars;
     public Rigidbody self_rb;
     public Vector3 init_cords;
 
@@ -16,7 +16,7 @@ public class node_physics_handler : MonoBehaviour
 
     // this function takes in distance, and calculates the force that should come out
     // so if the object to which the force should be applied is too far away, the force will be negative, if too close, then positive
-    public float connected_nodes_force(float distance)
+    public float CalcConnectedNodesForce(float distance)
     {
         return (float)Math.Tanh(distance - vars.distance_sweet_spot);
     }
@@ -25,8 +25,8 @@ public class node_physics_handler : MonoBehaviour
     private void Awake()
     {
         // mostly get components to be used later in the script
-        structure_handler = gameObject.GetComponent<node_structure_handler>();
-        vars = GameObject.Find("Main Camera").GetComponent<var_holder>();
+        structure_handler = gameObject.GetComponent<NodeStructureHandler>();
+        vars = GameObject.Find("Main Camera").GetComponent<VarHolder>();
         self_rb = gameObject.GetComponent<Rigidbody>();
         init_cords = transform.position;
     }
@@ -56,13 +56,13 @@ public class node_physics_handler : MonoBehaviour
                 if (Time.time >= previous_update_time + vars.seconds_per_physics_update)
                 {
                     previous_update_time = Time.time;
-                    physics_loop();
+                    PhysicsLoop();
                 }
             }
         }
     }
 
-    private void physics_loop()
+    private void PhysicsLoop()
     {
         for (int x = 0; x < connections.Count; x++)
         {
@@ -71,9 +71,9 @@ public class node_physics_handler : MonoBehaviour
                 Vector3 positionA = transform.position;
                 Vector3 positionB = connections[x].GetComponent<Transform>().position;
 
-                float num_of_connections_bias = -connections[x].GetComponent<node_structure_handler>().connections.Count() * 1f;
+                float num_of_connections_bias = -connections[x].GetComponent<NodeStructureHandler>().connections.Count() * 1f;
                 float biased_distance = Vector3.Distance(positionA, positionB) + num_of_connections_bias;
-                float biased_force_vector = connected_nodes_force(biased_distance);
+                float biased_force_vector = CalcConnectedNodesForce(biased_distance);
 
                 self_rb.AddForce((positionB - positionA) * biased_force_vector * Time.deltaTime * 80);
                 connections[x].GetComponent<Rigidbody>().AddForce((positionA - positionB) * biased_force_vector * Time.deltaTime * 150);

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class input_system : MonoBehaviour
+public class InputSystem : MonoBehaviour
 {
     public float movement_speed = 5.0f;
     public float rotation_speed = 3.0f;
@@ -23,7 +23,7 @@ public class input_system : MonoBehaviour
     void Update()
     {
         // handle physics throttle
-        var_holder vars = GetComponent<var_holder>();
+        VarHolder vars = GetComponent<VarHolder>();
         if (vars.seconds_per_physics_update <= vars.slowest_physics_updates)
         {
             vars.seconds_per_physics_update += (vars.slowest_physics_updates - vars.seconds_per_physics_update + 1) / 2f * Time.deltaTime;

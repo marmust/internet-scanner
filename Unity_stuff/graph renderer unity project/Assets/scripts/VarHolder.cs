@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class var_holder : MonoBehaviour
+public class VarHolder : MonoBehaviour
 {
     public string all_node_urls;
 

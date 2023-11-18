@@ -5,7 +5,7 @@ using System;
 using System.Net;
 
 
-public class node_structure_handler : MonoBehaviour
+public class NodeStructureHandler : MonoBehaviour
 {
     // information about THIS node
     public string node_url;
@@ -16,10 +16,10 @@ public class node_structure_handler : MonoBehaviour
 
     // things that THIS node will need in its "gameplay loop"
     public GameObject node_mould_object;
-    private var_holder vars;
+    private VarHolder vars;
     public List<GameObject> connections;
     public LineRenderer line_renderer;
-    public node_physics_handler physics_handler;
+    public NodePhysicsHandler physics_handler;
 
     public void OnProgress(object sender, DownloadProgressChangedEventArgs e){
         var k = e.ProgressPercentage;
@@ -66,10 +66,10 @@ public class node_structure_handler : MonoBehaviour
         is_cycle = false;
 
         // get all the components refrenced at the start, so they are all organized
-        vars = GameObject.Find("Main Camera").GetComponent<var_holder>();
+        vars = GameObject.Find("Main Camera").GetComponent<VarHolder>();
         line_renderer = gameObject.GetComponent<LineRenderer>();
         node_mould_object = GameObject.Find("mould");
-        physics_handler = gameObject.GetComponent<node_physics_handler>();
+        physics_handler = gameObject.GetComponent<NodePhysicsHandler>();
     }
 
     // !! FIRST READ expand_node() THEN READ void update() !!
@@ -138,7 +138,7 @@ public class node_structure_handler : MonoBehaviour
                                                                                        UnityEngine.Random.Range(-vars.init_gen_range, vars.init_gen_range));
                     // give the newborn its URL (see how it has the same variable node_url as THIS node)
                     // ]][[
-                    current_node.GetComponent<node_structure_handler>().node_url = url;
+                    current_node.GetComponent<NodeStructureHandler>().node_url = url;
                     // name the new node by its url (this is required in this line) --------------|
                     current_node.name = url;              //                                      |
                     // add the new node's url to that big string i was talking about before       |
@@ -183,7 +183,7 @@ public class node_structure_handler : MonoBehaviour
 
     //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     // this function will be called if we want to scan THIS node
-    public void expand_node()
+    public void ExpandNode()
     {
         // check if the node hass already been scanned (so player cant spam the same node)
         if (expanded) return;
