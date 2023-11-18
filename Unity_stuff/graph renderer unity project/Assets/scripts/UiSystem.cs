@@ -60,14 +60,7 @@ public class UiSystem : MonoBehaviour
         physics_update_rate_throttle.localPosition = Vector3.Lerp(new Vector3(927, -507, 0), new Vector3(927, -126, 0), 1 - vars.seconds_per_physics_update / vars.slowest_physics_updates);
         ChangeText(physics_update_rate_value_text, ((int)vars.seconds_per_physics_update).ToString().PadLeft(2, '0'), throttle_red_shift);
 
-        if (vars.typing_url)
-        {
-            URL_input.SetActive(true);
-        }
-        else
-        {
-            URL_input.SetActive(false);
-        }
+        URL_input.SetActive(vars.typing_url);
 
         if (locked_on_node)
         {
@@ -100,7 +93,12 @@ public class UiSystem : MonoBehaviour
                     text = "NOT SCANNED";
                 }
                 ChangeText(locked_node_scanned_text, text, new Color(256f, 79f, 79f, 256f));
-                ChangeText(locked_node_cycle_text, "UNKOWN - SCAN REQUIRED", new Color(256f, 79f, 79f, 256f));
+                if (node.scanError == null) {
+                    ChangeText(locked_node_cycle_text, "UNKOWN - SCAN REQUIRED", new Color(256f, 79f, 79f, 256f));
+                } else {
+                    ChangeText(locked_node_cycle_text, "ERROR - "+node.scanError, new Color(256f, 79f, 79f, 256f));
+                }
+                
             }
         }
         else

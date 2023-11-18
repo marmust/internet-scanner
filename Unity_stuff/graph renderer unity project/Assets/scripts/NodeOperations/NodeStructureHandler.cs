@@ -14,6 +14,8 @@ public class NodeStructureHandler : MonoBehaviour
     public int downloadProgress = 0;
     public bool scanning = false;
 
+    public string scanError = null;
+
     // things that THIS node will need in its "gameplay loop"
     public GameObject node_mould_object;
     private VarHolder vars;
@@ -35,7 +37,9 @@ public class NodeStructureHandler : MonoBehaviour
         // node scanned
         scanning = false;
         if (e.Cancelled || e.Error != null){
-            if (e.Error != null) Debug.LogError(e.Error);
+            if (e.Error == null) return;
+            Debug.LogError(e.Error);
+            scanError = e.Error.Message;
             return;
         }
         string html = e.Result;
@@ -105,6 +109,7 @@ public class NodeStructureHandler : MonoBehaviour
     public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246";
 
     public void TaskDownload(string url){
+        scanError = null;
         using WebClient webClient = new WebClient();
         webClient.Headers.Add("User-Agent", userAgent);
         // add event listener for download progress
