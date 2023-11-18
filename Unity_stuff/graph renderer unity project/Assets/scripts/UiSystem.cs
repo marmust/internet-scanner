@@ -6,10 +6,6 @@ public class UiSystem : MonoBehaviour
 {
     public bool locked_on_node;
 
-    public string locked_node_url;
-    public bool locked_node_cycle;
-    public bool locked_node_scanned;
-
     public GameObject target_indicator;
     public GameObject target_node;
     public VarHolder vars;
@@ -64,17 +60,18 @@ public class UiSystem : MonoBehaviour
 
         if (locked_on_node)
         {
+            var node = target_node.GetComponent<NodeStructureHandler>();
+
             target_indicator.SetActive(true);
             Vector2 screen_pos = RectTransformUtility.WorldToScreenPoint(Camera.main, target_node.transform.position);
             target_indicator_rctf.anchoredPosition = screen_pos - canvas_rctf.sizeDelta / 2f;
 
-            ChangeText(locked_node_url_text, locked_node_url, new Color(138f, 175f, 256f, 256f));
+            ChangeText(locked_node_url_text, node.node_url, new Color(138f, 175f, 256f, 256f));
 
-            if (locked_node_scanned)
-            {
+            if (node.expanded) {
                 ChangeText(locked_node_scanned_text, "SCANNED", new Color(54f, 256f, 97f, 256f));
 
-                if (locked_node_cycle)
+                if (node.is_cycle)
                 {
                     ChangeText(locked_node_cycle_text, "LEADS TO ITSELF", new Color(54f, 256f, 97f, 256f));
                 }
@@ -83,21 +80,23 @@ public class UiSystem : MonoBehaviour
                     ChangeText(locked_node_cycle_text, "NON CYCLICAL", new Color(138f, 175f, 256f, 256f));
                 }
             }
-            else
-            {
-                var node = target_node.GetComponent<NodeStructureHandler>();
+            else {
                 string text;
                 if (node.scanning) {
                     text = "SCANNING "+node.downloadProgress+"%";
                 } else {
-                    text = "NOT SCANNED";
+                    if (node.expanded) {
+                        text = "SCANNED";
+                    } else {
+                        if (string.IsNullOrEmpty(node.scanError)) {
+                            text = "NOT SCANNED";
+                        } else {
+                            text = "ERROR - "+node.scanError;
+                        }
+                    }
                 }
                 ChangeText(locked_node_scanned_text, text, new Color(256f, 79f, 79f, 256f));
-                if (node.scanError == null) {
-                    ChangeText(locked_node_cycle_text, "UNKOWN - SCAN REQUIRED", new Color(256f, 79f, 79f, 256f));
-                } else {
-                    ChangeText(locked_node_cycle_text, "ERROR - "+node.scanError, new Color(256f, 79f, 79f, 256f));
-                }
+                ChangeText(locked_node_cycle_text, "UNKOWN - SCAN REQUIRED", new Color(256f, 79f, 79f, 256f));
                 
             }
         }

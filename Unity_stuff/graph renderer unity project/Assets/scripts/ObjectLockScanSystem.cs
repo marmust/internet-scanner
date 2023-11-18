@@ -19,12 +19,7 @@ public class ObjectLockScanSystem : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             targeted_object = hit.collider.gameObject;
-            NodeStructureHandler targeted_object_NH = targeted_object.GetComponent<NodeStructureHandler>();
-
             ui_system.locked_on_node = true;
-            ui_system.locked_node_url = targeted_object_NH.node_url;
-            ui_system.locked_node_cycle = targeted_object_NH.is_cycle;
-            ui_system.locked_node_scanned = targeted_object_NH.expanded;
             ui_system.target_node = targeted_object;
         }
         else
