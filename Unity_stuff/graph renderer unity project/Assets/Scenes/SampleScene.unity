@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4366756, g: 0.48427194, b: 0.5645252, a: 1}
+  m_IndirectSpecularColor: {r: 0.4366757, g: 0.48427194, b: 0.5645252, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -650,8 +650,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 808878397}
-        m_TargetAssemblyTypeName: ui_system, Assembly-CSharp
-        m_MethodName: collect_url_from_textbox
+        m_TargetAssemblyTypeName: UiSystem, Assembly-CSharp
+        m_MethodName: CollectUrlFromTextBox
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2760,6 +2760,9 @@ MonoBehaviour:
   node_url: 
   expanded: 0
   is_cycle: 0
+  downloadProgress: 0
+  scanning: 0
+  scanError: 
   node_mould_object: {fileID: 0}
   connections: []
   line_renderer: {fileID: 0}
