@@ -10,6 +10,7 @@ public class NodePhysicsHandler : MonoBehaviour
     public VarHolder vars;
     public Rigidbody self_rb;
     public Vector3 init_cords;
+    public bool in_camera_physics_range = false;
 
     public List<GameObject> connections;
     public float previous_update_time;
@@ -64,46 +65,56 @@ public class NodePhysicsHandler : MonoBehaviour
 
     private void PhysicsLoop()
     {
-        for (int x = 0; x < connections.Count; x++)
+        if (in_camera_physics_range)
         {
-            if (connections[x] != null)
+            for (int x = 0; x < connections.Count; x++)
             {
-                Vector3 positionA = transform.position;
-                Vector3 positionB = connections[x].GetComponent<Transform>().position;
-
-                float num_of_connections_bias = -connections[x].GetComponent<NodeStructureHandler>().connections.Count() * 1f;
-                float biased_distance = Vector3.Distance(positionA, positionB) + num_of_connections_bias;
-                float biased_force_vector = CalcConnectedNodesForce(biased_distance);
-
-                self_rb.AddForce((positionB - positionA) * biased_force_vector * Time.deltaTime * 80);
-                connections[x].GetComponent<Rigidbody>().AddForce((positionA - positionB) * biased_force_vector * Time.deltaTime * 150);
+                if (connections[x] != null)
+                {
+                    //// central gravity - done
+                    //// attempt to stay at sweet spot distance (bias by num_of_connections)
+                    //if (connections[x].name != "mould")
+                    //{
+                    //    Vector3 my_position = transform.position;
+                    //    Vector3 other_position = connections[x].GetComponent<Transform>().position;
+                    //
+                    //    float num_of_connections_bias = connections[x].GetComponent<node_structure_handler>().connections.Count();
+                    //    float distance = Vector3.Distance(my_position, other_position);
+                    //    float biased_distance = connected_nodes_force(distance) * (num_of_connections_bias*num_of_connections_bias + 1);
+                    //    Vector3 force_vector = (other_position - my_position) * biased_distance;
+                    //    Vector3 normalized_force_vector = force_vector * Time.deltaTime * vars.physics_force_general_strength;
+                    //
+                    //    self_rb.AddForce(normalized_force_vector);
+                    //    connections[x].GetComponent<Rigidbody>().AddForce(-normalized_force_vector);
+                    //}
+                }
             }
-        }
 
-        if (gameObject.name != "mould" && transform.parent != null)
-        {
-            Vector3 force = transform.parent.root.position - transform.position;
-            self_rb.AddForce(force * Time.deltaTime * vars.central_gravity_strength);
-        }
-
-        //if (transform.childCount > 0)
-        //{
-        Collider[] in_range_objects = Physics.OverlapSphere(transform.position, vars.foreighn_node_interaction_range);
-
-        foreach (var current_foreighn_object in in_range_objects)
-        {
-            if (!current_foreighn_object.transform.IsChildOf(transform) &&
-                current_foreighn_object.transform.childCount > 0 &&
-                current_foreighn_object.gameObject != gameObject)
+            if (gameObject.name != "mould" && transform.parent != null)
             {
-                self_rb.AddForce((transform.position - current_foreighn_object.transform.position) * Time.deltaTime);
+                Vector3 force = transform.position - transform.parent.root.position;
+                self_rb.AddForce(force * vars.central_gravity_strength);
             }
-        }
-        //}
 
-        if (gameObject.name != "mould" && transform.parent == null)
-        {
-            transform.position = init_cords;
+            Collider[] in_range_objects = Physics.OverlapSphere(transform.position, vars.foreighn_node_interaction_range);
+
+            foreach (var current_foreighn_object in in_range_objects)
+            {
+                if (!current_foreighn_object.transform.IsChildOf(transform) &&
+                    current_foreighn_object.transform.childCount > 0 &&
+                    current_foreighn_object.gameObject != gameObject)
+                {
+                    self_rb.AddForce((transform.position - current_foreighn_object.transform.position));
+                }
+            }
+
+            if (transform.parent != null)
+            {
+                if (transform.childCount == 1)
+                {
+                    self_rb.AddForce((transform.parent.transform.position - transform.position) * 10);
+                }
+            }
         }
     }
 }
