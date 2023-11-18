@@ -92,7 +92,14 @@ public class ui_system : MonoBehaviour
             }
             else
             {
-                change_text(locked_node_scanned_text, "NOT SCANNED", new Color(256f, 79f, 79f, 256f));
+                var node = target_node.GetComponent<node_structure_handler>();
+                string text;
+                if (node.scanning) {
+                    text = "SCANNING "+node.downloadProgress+"%";
+                } else {
+                    text = "NOT SCANNED";
+                }
+                change_text(locked_node_scanned_text, text, new Color(256f, 79f, 79f, 256f));
                 change_text(locked_node_cycle_text, "UNKOWN - SCAN REQUIRED", new Color(256f, 79f, 79f, 256f));
             }
         }
@@ -110,7 +117,7 @@ public class ui_system : MonoBehaviour
         string inputted_url = url_inputfield.text;
         url_inputfield.text = "";
         vars.typing_url = false;
-        Vector3 spawn_cords = vars.gameObject.transform.FindChild("initial_node_spawner").transform.position;
+        Vector3 spawn_cords = vars.gameObject.transform.Find("initial_node_spawner").transform.position;
 
         if (!vars.all_node_urls.Contains(inputted_url))
         {
