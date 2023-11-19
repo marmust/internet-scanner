@@ -22,4 +22,13 @@ To open the Unity Project:
 5. Navigate to where you put your `graph renderer unity project` directory and select it. (GitHub will download the folder as a `.zip` so you'll have to unzip it first.
 6. Have fun!
 
-* readmy by: Joey451-OG
+controlls:
+- WASD - movement
+- CTRL - down
+- SPACE - up
+- left SHIFT - boost
+- LMB - scan
+- TAB - open URL prompt
+
+
+readmy by: Joey451-OG
