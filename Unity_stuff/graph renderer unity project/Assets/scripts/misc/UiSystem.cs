@@ -35,8 +35,8 @@ public class UiSystem : MonoBehaviour
         ChangeText(locked_node_cycle_text, "NULL", new Color(69f, 69f, 69f, 256f));
         ChangeText(locked_node_scanned_text, "NULL", new Color(69f, 69f, 69f, 256f));
         ChangeText(physics_update_rate_value_text, "00", new Color(256f, 256f, 256f, 256f));
-        max_physics_throttle_text.text = (vars.fastest_physics_updates).ToString();
-        min_physics_throttle_text.text = (vars.slowest_physics_updates).ToString();
+        max_physics_throttle_text.text = (vars.FastestPhysicsUpdates).ToString();
+        min_physics_throttle_text.text = (vars.SlowestPhysicsUpdates).ToString();
 
         physics_update_rate_throttle.localPosition = new Vector3(927, -507, 0);
         vars = GameObject.Find("Main Camera").GetComponent<VarHolder>();
@@ -50,13 +50,13 @@ public class UiSystem : MonoBehaviour
 
     private void Update()
     {
-        throttle_red_shift = Color.Lerp(new Color(256f, 61f, 61f, 256f), new Color(256f, 256f, 256f, 256f), vars.seconds_per_physics_update / vars.slowest_physics_updates);
+        throttle_red_shift = Color.Lerp(new Color(256f, 61f, 61f, 256f), new Color(256f, 256f, 256f, 256f), vars.SecondsPerPhysicsUpdate / vars.SlowestPhysicsUpdates);
 
         physics_update_rate_throttle.GetComponent<RawImage>().color = throttle_red_shift / 256;
-        physics_update_rate_throttle.localPosition = Vector3.Lerp(new Vector3(927, -507, 0), new Vector3(927, -126, 0), 1 - vars.seconds_per_physics_update / vars.slowest_physics_updates);
-        ChangeText(physics_update_rate_value_text, ((int)vars.seconds_per_physics_update).ToString().PadLeft(2, '0'), throttle_red_shift);
+        physics_update_rate_throttle.localPosition = Vector3.Lerp(new Vector3(927, -507, 0), new Vector3(927, -126, 0), 1 - vars.SecondsPerPhysicsUpdate / vars.SlowestPhysicsUpdates);
+        ChangeText(physics_update_rate_value_text, ((int)vars.SecondsPerPhysicsUpdate).ToString().PadLeft(2, '0'), throttle_red_shift);
 
-        URL_input.SetActive(vars.typing_url);
+        URL_input.SetActive(vars.IsTypingUrl);
 
         if (locked_on_node)
         {
@@ -113,17 +113,17 @@ public class UiSystem : MonoBehaviour
     {
         string inputted_url = url_inputfield.text;
         url_inputfield.text = "";
-        vars.typing_url = false;
+        vars.IsTypingUrl = false;
         Vector3 spawn_cords = vars.gameObject.transform.Find("initial_node_spawner").transform.position;
 
-        if (!vars.all_node_urls.Contains(inputted_url))
+        if (!vars.AllNodeUrls.Contains(inputted_url))
         {
             GameObject current_node = Instantiate(GameObject.Find("mould"));
             current_node.GetComponent<NodePhysicsHandler>().init_cords = spawn_cords;
             current_node.transform.position = spawn_cords;
             current_node.GetComponent<NodeStructureHandler>().node_url = inputted_url;
             current_node.name = inputted_url;
-            vars.all_node_urls += inputted_url + " \n ";
+            vars.AllNodeUrls += inputted_url + " \n ";
         }
     }
 }

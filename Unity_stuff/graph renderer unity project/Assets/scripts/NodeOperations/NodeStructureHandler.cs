@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 using System;
 using System.Net;
 
-
 public class NodeStructureHandler : MonoBehaviour
 {
     // information about THIS node
@@ -130,7 +129,7 @@ public class NodeStructureHandler : MonoBehaviour
             if (url != node_url)
             {
                 // we dont want any duplicate nodes, so if we find any (from a big string) we dont create a new node, but connect to an existing one
-                if (!vars.all_node_urls.Contains(url))
+                if (!vars.AllNodeUrls.Contains(url))
                 {
                     // if its not a duplicate we found, we create a new node
                     // node mould object is a clone of THIS node, only difference is that its associated URL (node_url) is an empty string
@@ -138,16 +137,16 @@ public class NodeStructureHandler : MonoBehaviour
                     // yes, i am aware prefabs exist im having some mysterious cicumstances happen when using them
                     GameObject current_node = Instantiate(node_mould_object, transform);
                     // give the newborn node a random position (close to THIS node)
-                    current_node.transform.position = transform.position + new Vector3(UnityEngine.Random.Range(-vars.init_gen_range, vars.init_gen_range),
-                                                                                       UnityEngine.Random.Range(-vars.init_gen_range, vars.init_gen_range),
-                                                                                       UnityEngine.Random.Range(-vars.init_gen_range, vars.init_gen_range));
+                    current_node.transform.position = transform.position + new Vector3(UnityEngine.Random.Range(-vars.InitGenRange, vars.InitGenRange),
+                                                                                       UnityEngine.Random.Range(-vars.InitGenRange, vars.InitGenRange),
+                                                                                       UnityEngine.Random.Range(-vars.InitGenRange, vars.InitGenRange));
                     // give the newborn its URL (see how it has the same variable node_url as THIS node)
                     // ]][[
                     current_node.GetComponent<NodeStructureHandler>().node_url = url;
                     // name the new node by its url (this is required in this line) --------------|
                     current_node.name = url;              //                                      |
                     // add the new node's url to that big string i was talking about before       |
-                    vars.all_node_urls += url + " \n ";   //                                      |
+                    vars.AllNodeUrls += url + " \n ";   //                                      |
                     // add that new node to a list that i call connections                        |
                     // it is used to both draw lines between nodes, and later handle physics      |
                     connections.Add(current_node);        //                                      |

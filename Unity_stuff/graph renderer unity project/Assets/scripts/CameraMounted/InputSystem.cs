@@ -3,20 +3,16 @@ using System.Collections.Generic;
 
 public class InputSystem : MonoBehaviour
 {
-    public float movement_speed = 5.0f;
-    public float rotation_speed = 3.0f;
-    public float boost_value = 3.0f;
-
-    public List<Transform> hold_on_to;
-    public List<Vector3> init_positions;
+    public List<Transform> HoldOnTo;
+    public List<Vector3> InitPositions;
 
     private float is_boosting = 1;
 
     private void Awake()
     {
-        foreach (Transform current_transform in hold_on_to)
+        foreach (Transform current_transform in HoldOnTo)
         {
-            init_positions.Add(current_transform.localPosition);
+            InitPositions.Add(current_transform.localPosition);
         }
     }
 
@@ -24,71 +20,70 @@ public class InputSystem : MonoBehaviour
     {
         // handle physics throttle
         VarHolder vars = GetComponent<VarHolder>();
-        if (vars.seconds_per_physics_update <= vars.slowest_physics_updates)
+        if (vars.SecondsPerPhysicsUpdate <= vars.SlowestPhysicsUpdates)
         {
-            vars.seconds_per_physics_update += (vars.slowest_physics_updates - vars.seconds_per_physics_update + 1) / 2f * Time.deltaTime;
+            vars.SecondsPerPhysicsUpdate += (vars.SlowestPhysicsUpdates - vars.SecondsPerPhysicsUpdate + 1) / 2f * Time.deltaTime;
+        }
+
+        if (Input.GetKey(KeyCode.G))
+        {
+            if (vars.SecondsPerPhysicsUpdate >= vars.FastestPhysicsUpdates)
+            {
+                vars.SecondsPerPhysicsUpdate -= 20f * Time.deltaTime;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            vars.typing_url = !vars.typing_url;
+            vars.IsTypingUrl = !vars.IsTypingUrl;
         }
 
-
-        if (Input.GetKey(KeyCode.G))
-        {
-            if (vars.seconds_per_physics_update >= vars.fastest_physics_updates)
-            {
-                vars.seconds_per_physics_update -= 20f * Time.deltaTime;
-            }
-        }
-
-        if (!vars.typing_url)
+        if (!vars.IsTypingUrl)
         {
             // there are some objects that need to be attached to the camera (such as mould object)
-            // teleport them here (ik how children work this is so physics objects dontdrift off)
-            for (int x = 0; x < hold_on_to.Count; x++)
+            // teleport them here (ik how children work this is so physics objects dont drift off)
+            for (int x = 0; x < HoldOnTo.Count; x++)
             {
-                hold_on_to[x].localPosition = init_positions[x];
+                HoldOnTo[x].localPosition = InitPositions[x];
             }
 
             // handle camera movement inputs
             if (Input.GetKey(KeyCode.A))
             {
-                transform.position -= transform.right * movement_speed * Time.deltaTime * is_boosting;
+                transform.position -= transform.right * vars.MovementSpeed * Time.deltaTime * is_boosting;
             }
             if (Input.GetKey(KeyCode.D))
             {
-                transform.position += transform.right * movement_speed * Time.deltaTime * is_boosting;
+                transform.position += transform.right * vars.MovementSpeed * Time.deltaTime * is_boosting;
             }
             if (Input.GetKey(KeyCode.W))
             {
-                transform.position += transform.forward * movement_speed * Time.deltaTime * is_boosting;
+                transform.position += transform.forward * vars.MovementSpeed * Time.deltaTime * is_boosting;
             }
             if (Input.GetKey(KeyCode.S))
             {
-                transform.position -= transform.forward * movement_speed * Time.deltaTime * is_boosting;
+                transform.position -= transform.forward * vars.MovementSpeed * Time.deltaTime * is_boosting;
             }
             if (Input.GetKey(KeyCode.Space))
             {
-                transform.position += transform.up * movement_speed * Time.deltaTime * is_boosting;
+                transform.position += transform.up * vars.MovementSpeed * Time.deltaTime * is_boosting;
             }
             if (Input.GetKey(KeyCode.LeftControl))
             {
-                transform.position -= transform.up * movement_speed * Time.deltaTime * is_boosting;
+                transform.position -= transform.up * vars.MovementSpeed * Time.deltaTime * is_boosting;
             }
 
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                is_boosting = boost_value;
+                is_boosting = vars.BoostValue;
             }
             else
             {
                 is_boosting = 1;
             }
 
-            float mouseX = Input.GetAxis("Mouse X") * rotation_speed;
-            float mouseY = -Input.GetAxis("Mouse Y") * rotation_speed;
+            float mouseX = Input.GetAxis("Mouse X") * vars.RotationSpeed;
+            float mouseY = -Input.GetAxis("Mouse Y") * vars.RotationSpeed;
 
             transform.Rotate(Vector3.up, mouseX, Space.World);
             if (transform.rotation.y < 180 && transform.rotation.y > -180)

@@ -1962,17 +1962,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 915a418f1e2720f419d21e4243e53c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  all_node_urls: 
-  distance_sweet_spot: 2.45
-  physics_force_general_strength: 0
-  central_gravity_strength: 86.7
-  foreighn_node_interaction_range: 4.5
-  init_gen_range: 10
-  seconds_per_physics_update: 10.001098
-  fastest_physics_updates: 0.1
-  slowest_physics_updates: 10
-  typing_url: 0
+  AllNodeUrls: 
+  InitGenRange: 10
+  PhysicsForceGeneralStrength: 35.41
+  ForeighnNodeInteractionRange: 5
+  MinimalChildDistance: 5
+  ChildDistanceConnectionsEffect: 1
+  ParentWeight: 1
+  TanhSoften: 0.01
   ColorMode: in_range
+  SecondsPerPhysicsUpdate: 0
+  FastestPhysicsUpdates: 0.1
+  SlowestPhysicsUpdates: 10
+  MovementSpeed: 5
+  RotationSpeed: 3
+  BoostValue: 3
+  IsTypingUrl: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2000,12 +2005,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d4152d815fb0f48837c7a0b8373b80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movement_speed: 5
-  rotation_speed: 3
-  boost_value: 10
-  hold_on_to:
-  - {fileID: 1215610326}
-  init_positions: []
+  HoldOnTo: []
+  InitPositions: []
 --- !u!1 &1031470340
 GameObject:
   m_ObjectHideFlags: 0
@@ -2723,7 +2724,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215610325}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -2742,7 +2743,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structure_handler: {fileID: 0}
   vars: {fileID: 0}
-  self_rb: {fileID: 0}
+  SelfRB: {fileID: 0}
   init_cords: {x: 0, y: 0, z: 0}
   in_camera_physics_range: 0
   connections: []

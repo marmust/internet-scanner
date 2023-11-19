@@ -2,27 +2,32 @@ using UnityEngine;
 
 public class VarHolder : MonoBehaviour
 {
-    public string all_node_urls;
+    // for graph structure handling
+    public string AllNodeUrls;
+    public float InitGenRange;
 
-    public float distance_sweet_spot = 10;
+    // for physics settings
+    public float PhysicsForceGeneralStrength;
+    public float ForeighnNodeInteractionRange;
+    public float MinimalChildDistance;
+    public float ChildDistanceConnectionsEffect;
+    public float ParentWeight;
+    public float TanhSoften;
 
-    public float physics_force_general_strength;
-
-    public float central_gravity_strength;
-
-    public float foreighn_node_interaction_range;
-
-    public float init_gen_range;
-
-    public float seconds_per_physics_update;
-
-    public float fastest_physics_updates;
-
-    public float slowest_physics_updates;
-
-    public bool typing_url;
-
+    // for player to controll
     public string ColorMode = "in_range";
+    public float SecondsPerPhysicsUpdate;
+    // maybe dont let the player controll that
+    public float FastestPhysicsUpdates = 0.1f;
+    public float SlowestPhysicsUpdates = 10f;
+
+    // for camera movement settings
+    public float MovementSpeed = 5.0f;
+    public float RotationSpeed = 3.0f;
+    public float BoostValue = 3.0f;
+
+    // to check if the player is inputting a url currently
+    public bool IsTypingUrl;
 
     // for later use: public float by_branch_mutaion_rate = 0.1f;
 }

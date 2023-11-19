@@ -8,7 +8,7 @@ public class NodePhysicsHandler : MonoBehaviour
     // i wont explain all this
     public NodeStructureHandler structure_handler;
     public VarHolder vars;
-    public Rigidbody self_rb;
+    public Rigidbody SelfRB;
     public Vector3 init_cords;
     public bool in_camera_physics_range = false;
 
@@ -17,9 +17,13 @@ public class NodePhysicsHandler : MonoBehaviour
 
     // this function takes in distance, and calculates the force that should come out
     // so if the object to which the force should be applied is too far away, the force will be negative, if too close, then positive
-    public float CalcConnectedNodesForce(float distance)
+    public Vector3 CalcTanhOfVector3(Vector3 forceVec3)
     {
-        return (float)Math.Tanh(distance - vars.distance_sweet_spot);
+        float tanhX = (float)Math.Tanh(forceVec3.x * vars.TanhSoften);
+        float tanhY = (float)Math.Tanh(forceVec3.y * vars.TanhSoften);
+        float tanhZ = (float)Math.Tanh(forceVec3.z * vars.TanhSoften);
+
+    return forceVec3;//new Vector3(tanhX, tanhY, tanhZ);
     }
 
     // wake up settings when object is initialized
@@ -28,7 +32,7 @@ public class NodePhysicsHandler : MonoBehaviour
         // mostly get components to be used later in the script
         structure_handler = gameObject.GetComponent<NodeStructureHandler>();
         vars = GameObject.Find("Main Camera").GetComponent<VarHolder>();
-        self_rb = gameObject.GetComponent<Rigidbody>();
+        SelfRB = gameObject.GetComponent<Rigidbody>();
         init_cords = transform.position;
     }
 
@@ -50,15 +54,13 @@ public class NodePhysicsHandler : MonoBehaviour
                 // if it is the root node we lock it in its initial position (check void awake()) so the graph wont fly away by accident
                 transform.position = init_cords;
             }
-            else
+
+            // if its not the root node then apply the normal physics loop
+            // check if its time to update the physics (depends on the throttle)
+            if (Time.time >= previous_update_time + vars.SecondsPerPhysicsUpdate)
             {
-                // if its not the root node then apply the normal physics loop
-                // check if its time to update the physics (depends on the throttle)
-                if (Time.time >= previous_update_time + vars.seconds_per_physics_update)
-                {
-                    previous_update_time = Time.time;
-                    PhysicsLoop();
-                }
+                previous_update_time = Time.time;
+                PhysicsLoop();
             }
         }
     }
@@ -67,54 +69,54 @@ public class NodePhysicsHandler : MonoBehaviour
     {
         if (in_camera_physics_range)
         {
-            for (int x = 0; x < connections.Count; x++)
+            // attract all connected nodes to yourself
+            foreach (GameObject connection in connections)
             {
-                if (connections[x] != null)
+                float IdealDistance = vars.MinimalChildDistance +
+                                      connection.GetComponent<NodeStructureHandler>().connections.Count *
+                                      vars.ChildDistanceConnectionsEffect;
+
+
+                //attraction(connection);
+                if (Vector3.Distance(transform.position, connection.transform.position) < IdealDistance)
                 {
-                    //// central gravity - done
-                    //// attempt to stay at sweet spot distance (bias by num_of_connections)
-                    //if (connections[x].name != "mould")
-                    //{
-                    //    Vector3 my_position = transform.position;
-                    //    Vector3 other_position = connections[x].GetComponent<Transform>().position;
-                    //
-                    //    float num_of_connections_bias = connections[x].GetComponent<node_structure_handler>().connections.Count();
-                    //    float distance = Vector3.Distance(my_position, other_position);
-                    //    float biased_distance = connected_nodes_force(distance) * (num_of_connections_bias*num_of_connections_bias + 1);
-                    //    Vector3 force_vector = (other_position - my_position) * biased_distance;
-                    //    Vector3 normalized_force_vector = force_vector * Time.deltaTime * vars.physics_force_general_strength;
-                    //
-                    //    self_rb.AddForce(normalized_force_vector);
-                    //    connections[x].GetComponent<Rigidbody>().AddForce(-normalized_force_vector);
-                    //}
+                    repulsion(connection);
+                }
+                else
+                {
+                    attraction(connection);
                 }
             }
 
-            if (gameObject.name != "mould" && transform.parent != null)
-            {
-                Vector3 force = transform.position - transform.parent.root.position;
-                self_rb.AddForce(force * vars.central_gravity_strength);
-            }
+            Collider[] InRangeObjects = Physics.OverlapSphere(transform.position, vars.ForeighnNodeInteractionRange);
 
-            Collider[] in_range_objects = Physics.OverlapSphere(transform.position, vars.foreighn_node_interaction_range);
-
-            foreach (var current_foreighn_object in in_range_objects)
+            // repel all unconnected nodes in range
+            foreach (var CurrentForeighnObject in InRangeObjects)
             {
-                if (!current_foreighn_object.transform.IsChildOf(transform) &&
-                    current_foreighn_object.transform.childCount > 0 &&
-                    current_foreighn_object.gameObject != gameObject)
+                if (CurrentForeighnObject.name != "mould" &&
+                    CurrentForeighnObject.tag == "node")
                 {
-                    self_rb.AddForce((transform.position - current_foreighn_object.transform.position));
-                }
-            }
-
-            if (transform.parent != null)
-            {
-                if (transform.childCount == 1)
-                {
-                    self_rb.AddForce((transform.parent.transform.position - transform.position) * 10);
+                    repulsion(CurrentForeighnObject.gameObject);
                 }
             }
         }
+    }
+
+    private void repulsion(GameObject other)
+    {
+        Vector3 MyFroceVector = CalcTanhOfVector3(transform.position - other.transform.position) * vars.PhysicsForceGeneralStrength;
+        Vector3 OtherFroceVector = CalcTanhOfVector3(other.transform.position - transform.position) * vars.PhysicsForceGeneralStrength;
+
+        SelfRB.AddForce(MyFroceVector * vars.ParentWeight);
+        other.GetComponent<Rigidbody>().AddForce(OtherFroceVector);
+    }
+
+    private void attraction(GameObject other)
+    {
+        Vector3 MyFroceVector = CalcTanhOfVector3(other.transform.position - transform.position) * vars.PhysicsForceGeneralStrength;
+        Vector3 OtherFroceVector = CalcTanhOfVector3(transform.position - other.transform.position) * vars.PhysicsForceGeneralStrength;
+
+        SelfRB.AddForce(MyFroceVector * vars.ParentWeight);
+        other.GetComponent<Rigidbody>().AddForce(OtherFroceVector);
     }
 }
