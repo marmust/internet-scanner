@@ -1968,8 +1968,7 @@ MonoBehaviour:
   ForeignNodeInteractionRange: 5
   MinimalChildDistance: 5
   ChildDistanceConnectionsEffect: 1
-  ParentWeight: 1
-  TanhSoften: 0.01
+  TanhSoften: 1
   ColorMode: 0
   SecondsPerPhysicsUpdate: 0
   FastestPhysicsUpdates: 0.1

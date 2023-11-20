@@ -16,7 +16,6 @@ public class VarHolder : MonoBehaviour
     public float ForeignNodeInteractionRange;
     public float MinimalChildDistance;
     public float ChildDistanceConnectionsEffect;
-    public float ParentWeight;
     public float TanhSoften;
 
     // for player to control
