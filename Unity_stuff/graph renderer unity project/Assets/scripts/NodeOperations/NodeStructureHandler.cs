@@ -107,7 +107,7 @@ public class NodeStructureHandler : MonoBehaviour
 
     public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36";
 
-    public void TaskDownload(string url){
+    public void TaskDownload(string url) {
         scanError = null;
         using WebClient webClient = new WebClient();
         webClient.Headers.Add("User-Agent", userAgent);
@@ -222,6 +222,52 @@ public class NodeStructureHandler : MonoBehaviour
         if (expanded) return;
         // Start downloading content for parsing
         scanning = true;
+
+        // We only wanna do fancy guesswork when there is no protocol on the URL and when the url is not empty
+        if (node_url != null && node_url != "" && !node_url.Contains("://"))
+        {
+
+            // Check if there are any slashes which separate the string.
+            // We can achieve this by splitting the string by "/" and extrapolating information
+            // from the resulting array.
+            //
+            // If the array is of size 1, that means the string had a traling, leading or no slash at all.
+            // If the array is if size 2 or larger then we can safely assume that there are separating slashes
+            var separations = new List<string>(node_url.Split('/'));
+
+            if (separations.Count >= 2)
+            {
+
+                string host = separations[0];
+                separations.Remove(host);
+                
+
+                // We now have the host (hopefully)
+                // We can look it up on the DNS to see if it's valid
+                IPHostEntry dnslookup;
+                
+                dnslookup = Dns.GetHostEntry(host);
+
+                // If there  is no adresses found then the hostname is invalid
+                if (dnslookup.AddressList.Length == 0)
+                {
+                    scanError = "Invalid hostname";
+                    return;
+                }
+
+                
+                node_url = $"https://{host}/{String.Join("/", separations)}";
+
+
+            }
+            else
+            {
+                node_url = $"https://{separations[0].Trim('/')}";
+            }
+   
+
+        }
+        
         TaskDownload(node_url);
     
     }
