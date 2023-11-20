@@ -118,15 +118,44 @@ public class NodeStructureHandler : MonoBehaviour
         webClient.DownloadStringAsync(new Uri(url));
     }
 
+    public bool IsSamePage(string url1, string url2)
+    {
+        string normalizedUrl1 = NormalizeUrl(url1);
+        string normalizedUrl2 = NormalizeUrl(url2);
+
+        return normalizedUrl1 == normalizedUrl2;
+    }
+
+    private string NormalizeUrl(string url)
+    {
+        // Convert to lowercase
+        url = url.ToLowerInvariant();
+
+        // Remove scheme (http and https)
+        url = url.Replace("http://", "").Replace("https://", "");
+
+        // Remove fragment and query string
+        int fragmentIndex = url.IndexOf('#');
+        if (fragmentIndex != -1)
+            url = url.Substring(0, fragmentIndex);
+
+        int queryIndex = url.IndexOf('?');
+        if (queryIndex != -1)
+            url = url.Substring(0, queryIndex);
+
+        return url;
+    }
+
     public void AttachUrls(List<string> connected_urls){
         // make sure to update the settings (so player cant spam the same node)
         expanded = true;
+        
         // after retrieving all of the links connected to THIS node, we do the following operations:
         foreach (string url in connected_urls)
         {
             // check if we stumbled back on THIS node
             // if this happens, that means the node is cyclic - meaning that this webpage has a link going back to itself
-            if (url != node_url)
+            if (!IsSamePage(url, node_url))
             {
                 // we dont want any duplicate nodes, so if we find any (from a big string) we dont create a new node, but connect to an existing one
                 if (!vars.AllNodeUrls.Contains(url))
@@ -146,7 +175,7 @@ public class NodeStructureHandler : MonoBehaviour
                     // name the new node by its url (this is required in this line) --------------|
                     current_node.name = url;              //                                      |
                     // add the new node's url to that big string i was talking about before       |
-                    vars.AllNodeUrls += url + " \n ";   //                                      |
+                    vars.AllNodeUrls += url + " \n ";   //                                        |
                     // add that new node to a list that i call connections                        |
                     // it is used to both draw lines between nodes, and later handle physics      |
                     connections.Add(current_node);        //                                      |
