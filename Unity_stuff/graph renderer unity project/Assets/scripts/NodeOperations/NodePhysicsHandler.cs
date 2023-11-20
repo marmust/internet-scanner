@@ -88,15 +88,15 @@ public class NodePhysicsHandler : MonoBehaviour
                 }
             }
 
-            Collider[] InRangeObjects = Physics.OverlapSphere(transform.position, vars.ForeighnNodeInteractionRange);
+            Collider[] InRangeObjects = Physics.OverlapSphere(transform.position, vars.ForeignNodeInteractionRange);
 
             // repel all unconnected nodes in range
-            foreach (var CurrentForeighnObject in InRangeObjects)
+            foreach (var CurrentForeignObject in InRangeObjects)
             {
-                if (CurrentForeighnObject.name != "mould" &&
-                    CurrentForeighnObject.tag == "node")
+                if (CurrentForeignObject.name != "mould" &&
+                    CurrentForeignObject.tag == "node")
                 {
-                    repulsion(CurrentForeighnObject.gameObject);
+                    repulsion(CurrentForeignObject.gameObject);
                 }
             }
         }
@@ -104,10 +104,10 @@ public class NodePhysicsHandler : MonoBehaviour
 
     private void repulsion(GameObject other)
     {
-        Vector3 MyFroceVector = CalcTanhOfVector3(transform.position - other.transform.position) * vars.PhysicsForceGeneralStrength;
+        Vector3 MyForceVector = CalcTanhOfVector3(transform.position - other.transform.position) * vars.PhysicsForceGeneralStrength;
         Vector3 OtherFroceVector = CalcTanhOfVector3(other.transform.position - transform.position) * vars.PhysicsForceGeneralStrength;
 
-        SelfRB.AddForce(MyFroceVector * vars.ParentWeight);
+        SelfRB.AddForce(MyForceVector * vars.ParentWeight);
         other.GetComponent<Rigidbody>().AddForce(OtherFroceVector);
     }
 

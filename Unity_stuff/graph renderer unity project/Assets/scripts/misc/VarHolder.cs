@@ -1,25 +1,30 @@
+using Assets.scripts.misc;
 using UnityEngine;
 
 public class VarHolder : MonoBehaviour
 {
     // for graph structure handling
+    [InspectorName("Graph Structure")]
     public string AllNodeUrls;
     public float InitGenRange;
 
     // for physics settings
+    [InspectorName("Physics")]
     public float PhysicsForceGeneralStrength;
-    public float ForeighnNodeInteractionRange;
+    public float ForeignNodeInteractionRange;
     public float MinimalChildDistance;
     public float ChildDistanceConnectionsEffect;
     public float ParentWeight;
     public float TanhSoften;
 
-    // for player to controll
-    public string ColorMode = "in_range";
+    // for player to control
+    public ColorMode ColorMode = ColorMode.in_range;
+    [HideInInspector]
     public float SecondsPerPhysicsUpdate;
-    // maybe dont let the player controll that
+
     public float FastestPhysicsUpdates = 0.1f;
     public float SlowestPhysicsUpdates = 10f;
+
 
     // for camera movement settings
     public float MovementSpeed = 5.0f;
