@@ -1,3 +1,4 @@
+using Assets.scripts.misc;
 using UnityEngine;
 
 public class NodeColorHandler : MonoBehaviour
@@ -24,7 +25,7 @@ public class NodeColorHandler : MonoBehaviour
 
     private void Update()
     {
-        if (vars.ColorMode == "in_range")
+        if (vars.ColorMode == ColorMode.in_range)
         {
             if (physics_handler.in_camera_physics_range)
             {
@@ -36,7 +37,7 @@ public class NodeColorHandler : MonoBehaviour
             }
         }
 
-        //if (vars.color_mode == "by_branch")
+        //if (vars.ColorMode == ColorMode.by_branch)
         //{
         //    if (transform.parent != null)
         //    {
@@ -44,6 +45,8 @@ public class NodeColorHandler : MonoBehaviour
         //    }
         //}
     }
+
+
 
     // for later use:
     //public void propogate_by_branch_mode(Color parent_color)

@@ -7,6 +7,7 @@ public class InputSystem : MonoBehaviour
     public List<Vector3> InitPositions;
 
     private float is_boosting = 1;
+    private float totalXRotation = 0f;
 
     private void Awake()
     {
@@ -50,27 +51,27 @@ public class InputSystem : MonoBehaviour
             // handle camera movement inputs
             if (Input.GetKey(KeyCode.A))
             {
-                transform.position -= transform.right * vars.MovementSpeed * Time.deltaTime * is_boosting;
+                transform.position -= is_boosting * Time.deltaTime * vars.MovementSpeed * transform.right; // re-ordered multiplication so vector is done last (this is a small performance fix, but not a big deal)
             }
             if (Input.GetKey(KeyCode.D))
             {
-                transform.position += transform.right * vars.MovementSpeed * Time.deltaTime * is_boosting;
+                transform.position += is_boosting * Time.deltaTime * vars.MovementSpeed * transform.right;
             }
             if (Input.GetKey(KeyCode.W))
             {
-                transform.position += transform.forward * vars.MovementSpeed * Time.deltaTime * is_boosting;
+                transform.position += is_boosting * Time.deltaTime * vars.MovementSpeed * transform.forward;
             }
             if (Input.GetKey(KeyCode.S))
             {
-                transform.position -= transform.forward * vars.MovementSpeed * Time.deltaTime * is_boosting;
+                transform.position -= is_boosting * Time.deltaTime * vars.MovementSpeed * transform.forward;
             }
             if (Input.GetKey(KeyCode.Space))
             {
-                transform.position += transform.up * vars.MovementSpeed * Time.deltaTime * is_boosting;
+                transform.position += is_boosting * Time.deltaTime * vars.MovementSpeed * transform.up;
             }
             if (Input.GetKey(KeyCode.LeftControl))
             {
-                transform.position -= transform.up * vars.MovementSpeed * Time.deltaTime * is_boosting;
+                transform.position -= is_boosting * Time.deltaTime * vars.MovementSpeed * transform.up;
             }
 
             if (Input.GetKey(KeyCode.LeftShift))
@@ -86,10 +87,9 @@ public class InputSystem : MonoBehaviour
             float mouseY = -Input.GetAxis("Mouse Y") * vars.RotationSpeed;
 
             transform.Rotate(Vector3.up, mouseX, Space.World);
-            if (transform.rotation.y < 180 && transform.rotation.y > -180)
-            {
-                transform.Rotate(Vector3.right, mouseY, Space.Self);
-            }
+
+            totalXRotation = Mathf.Clamp(totalXRotation + mouseY, -90, 90);
+            transform.localEulerAngles = new Vector3(totalXRotation, transform.localEulerAngles.y, 0); // this HOPEFULLY fixes the x-axis randomly inverting whilst still preventing the camera from flipping upside down
 
             Cursor.lockState = CursorLockMode.Locked;
         }

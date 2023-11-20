@@ -9,6 +9,7 @@ namespace Assets.scripts.misc
     public enum ColorMode
     {
         in_range,
-        by_branch
+        by_branch,
+        by_relation
     }
 }
