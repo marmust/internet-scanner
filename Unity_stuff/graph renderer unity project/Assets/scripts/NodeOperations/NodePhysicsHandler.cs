@@ -129,13 +129,17 @@ public class NodePhysicsHandler : MonoBehaviour
                                       connection.GetComponent<NodeStructureHandler>().connections.Count() *
                                       vars.ChildDistanceConnectionsEffect;
 
+                float DistanceError = Vector3.Distance(connection.transform.position, transform.position) - IdealDistance;
+
                 // this vector is pointing towards THIS node, from the CONNECTION node
                 // it is used to pull the CONNECTION node to the correct holding position
                 // will be inverted if the node needs to be pushed
                 Vector3 PullVector = transform.position - connection.transform.position;
-                Vector3 ForceVector = CalcTanhOfVector3(PullVector, IdealDistance) * vars.PhysicsForceGeneralStrength;
 
-                connection.GetComponent<Rigidbody>().AddForce(ForceVector);
+                PullVector = PullVector * FastTanh(DistanceError) * vars.PhysicsForceGeneralStrength;
+                //Vector3 ForceVector = CalcTanhOfVector3(PullVector, IdealDistance) * vars.PhysicsForceGeneralStrength;
+
+                connection.GetComponent<Rigidbody>().AddForce(PullVector);
             }
         }
     }
