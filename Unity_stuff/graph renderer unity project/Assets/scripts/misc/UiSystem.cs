@@ -123,7 +123,6 @@ public class UiSystem : MonoBehaviour
             current_node.transform.position = spawn_cords;
             current_node.GetComponent<NodeStructureHandler>().node_url = inputted_url;
             current_node.name = inputted_url;
-            vars.AllNodeUrls += inputted_url + " \n ";
         }
     }
 }

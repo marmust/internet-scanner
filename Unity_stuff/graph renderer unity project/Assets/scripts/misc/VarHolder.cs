@@ -13,7 +13,6 @@ public class VarHolder : MonoBehaviour
     [Header("Physics")]
     [Tooltip("How strongly a node is attracted and repelled.")]
     public float PhysicsForceGeneralStrength;
-    public float ForeignNodeInteractionRange;
     public int MinimalChildDistance;
     public float ChildDistanceConnectionsEffect;
     public float TanhSoften;

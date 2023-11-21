@@ -16,10 +16,6 @@ public class NodePhysicsHandler : MonoBehaviour
     public List<GameObject> connections;
     public float previous_update_time;
 
-    private bool useTanh;
-
-    private LayerMask NodeLayer;
-
     private int[] lookup;
 
 
@@ -27,8 +23,9 @@ public class NodePhysicsHandler : MonoBehaviour
     {
         //changed to a slightly faster formula, forgot my old one approaches 0 - sorry about that! Hopefully this is better
         // it best emulates the tanh function when the numerator is multiplied by 1.1, but should still be a fast and accurate approximation, since we're mainly just using it to squish values
-        // desmos formula: x/\left(1+\operatorname{abs}\left(x\right)\right)
+        // desmos formula: x\cdot c/\left(1+\operatorname{abs}\left(x\cdot c\right)\right)
         // uses inline ternary, which should be roughly double the speed of tanh in all use-cases (I'm profiling on python bc its easier, but should be roughly the same)
+        x *= vars.TanhSoften;
         return x / (1f + ((x >= 0) ? x : -x));
     }
 
@@ -41,8 +38,6 @@ public class NodePhysicsHandler : MonoBehaviour
         SelfRB = gameObject.GetComponent<Rigidbody>();
         init_cords = transform.position;
         if(gameObject.name == "mould") previous_update_time = Time.time; // hacky fix for an obscure bug
-        useTanh = vars.UseTanh;
-        NodeLayer = LayerMask.GetMask("NodeLayer");
 
         //int log lookup table 
         lookup = new int[256];
@@ -64,7 +59,6 @@ public class NodePhysicsHandler : MonoBehaviour
 
     private void Update()
     {
-        useTanh = vars.UseTanh;
         // make sure that the texture of the node is looking at the camera
         // that texture can be found as one of the children in the nodes (first one in the list)
         transform.GetChild(0).transform.LookAt(vars.transform);
@@ -99,16 +93,22 @@ public class NodePhysicsHandler : MonoBehaviour
             //keep distance for connected nodes
             foreach (GameObject connection in connections)
             {
-                // the distance that we want the current node to be held at
-                float IdealDistance = 
-                    LogLookup(connection.GetComponent<NodeStructureHandler>().connections.Count() + vars.MinimalChildDistance) * vars.ChildDistanceConnectionsEffect;
+                if (connection != transform.parent)
+                {
+                    // the distance that we want the current node to be held at
+                    float IdealDistance = LogLookup(connection.GetComponent<NodeStructureHandler>().connections.Count() +
+                                          vars.MinimalChildDistance) *
+                                          vars.ChildDistanceConnectionsEffect;
 
 
-                float DistanceError = Vector3.Distance(connection.transform.position, transform.position) - IdealDistance;
-                Vector3 PullVector = transform.position - connection.transform.position;
+                    float DistanceError = Vector3.Distance(connection.transform.position, transform.position) - IdealDistance;
+                    Vector3 PullVector = transform.position - connection.transform.position;
                 
-                PullVector = PullVector * FastTanh(DistanceError) * vars.PhysicsForceGeneralStrength;
-                connection.GetComponent<Rigidbody>().AddForce(PullVector);
+                    PullVector = PullVector * FastTanh(DistanceError) * vars.PhysicsForceGeneralStrength;
+                    connection.GetComponent<Rigidbody>().AddForce(PullVector);
+                    // --[]--
+                    //SelfRB.AddForce(-PullVector);
+                }
             }
         }
     }
