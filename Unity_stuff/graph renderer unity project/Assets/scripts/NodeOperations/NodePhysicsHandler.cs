@@ -4,32 +4,6 @@ using System.Linq;
 using System;
 
 
-
-/*
-READ PLEASE:
-if you are here to fix the physics tanh situation then let me give you some context:
-the idea here is to have 2 forces:
-1: if nodes in "range" add repulsion.    <<< already working so everything good here.
-2: keep connected nodes at "distance" using the TANH function.   <<< not working
-
-how (2) supposted to work?
-check desmos so understand tanh(x) shape better     >>>     \tanh\left(x-c\right)    ---+
-basically x is the distance between nodes, y is the force that should be applied        |
-their vector 3 difference * tanh(distance)                                              |
-                                                                                        V
-C - is the optimal distance, where there are no force applied bcs vector3 is multiplied by 0.
-
-problem with (2):
-idk why but nodes go into the -x -y -z quadrant of the world.
-this is also happening when using linear (no tanh)
-i can reverse it and make the nodes go to +x +y +z by setting ideal distance to negative
-
-CTRL F --()-- to find all problematic places in the code
-*/
-
-
-
-
 public class NodePhysicsHandler : MonoBehaviour
 {
     // i wont explain all this
@@ -133,7 +107,6 @@ public class NodePhysicsHandler : MonoBehaviour
         {
             foreach (GameObject connection in connections)
             {
-                // --()--
                 // the distance that we want the current node to be held at
                 float IdealDistance = 
                     LogLookup(connection.GetComponent<NodeStructureHandler>().connections.Count() + vars.MinimalChildDistance) * vars.ChildDistanceConnectionsEffect;
@@ -150,17 +123,4 @@ public class NodePhysicsHandler : MonoBehaviour
             }
         }
     }
-
-    // Change-notes: we don't need to calculate the other force vector because it will be applied when the loop goes over it, this will just make the sim unstable
-    //private void repulsion(GameObject other)
-    //{
-    //    Vector3 MyForceVector = CalcTanhOfVector3(transform.position - other.transform.position) * vars.PhysicsForceGeneralStrength;
-    //    SelfRB.AddForce(MyForceVector * vars.ParentWeight);
-    //}
-    //
-    //private void attraction(GameObject other)
-    //{
-    //    Vector3 MyForceVector = CalcTanhOfVector3(other.transform.position - transform.position) * vars.PhysicsForceGeneralStrength;
-    //    SelfRB.AddForce(MyForceVector * vars.ParentWeight);
-    //}
 }
