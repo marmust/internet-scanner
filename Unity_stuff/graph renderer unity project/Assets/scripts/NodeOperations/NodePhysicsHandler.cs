@@ -22,15 +22,6 @@ public class NodePhysicsHandler : MonoBehaviour
 
     private int[] lookup;
 
-    // this function takes in distance, and calculates the force that should come out
-    // so if the object to which the force should be applied is too far away, the force will be negative, if too close, then positive
-    public Vector3 CalcTanhOfVector3(Vector3 forceVec3)
-    {
-            float tanhX = FastTanh(forceVec3.x);
-            float tanhY = FastTanh(forceVec3.y);
-            float tanhZ = FastTanh(forceVec3.z);
-            return new Vector3(tanhX, tanhY, tanhZ);
-    }
 
     private float FastTanh(float x)
     {
@@ -105,6 +96,7 @@ public class NodePhysicsHandler : MonoBehaviour
     {
         if (in_camera_physics_range)
         {
+            //keep distance for connected nodes
             foreach (GameObject connection in connections)
             {
                 // the distance that we want the current node to be held at
@@ -112,14 +104,11 @@ public class NodePhysicsHandler : MonoBehaviour
                     LogLookup(connection.GetComponent<NodeStructureHandler>().connections.Count() + vars.MinimalChildDistance) * vars.ChildDistanceConnectionsEffect;
 
 
-                // this vector is pointing towards THIS node, from the CONNECTION node
-                // it is used to pull the CONNECTION node to the correct holding position
-                // will be inverted if the node needs to be pushed
+                float DistanceError = Vector3.Distance(connection.transform.position, transform.position) - IdealDistance;
                 Vector3 PullVector = transform.position - connection.transform.position;
-
-                Vector3 ForceVector = CalcTanhOfVector3((PullVector.magnitude - IdealDistance) * PullVector) * vars.PhysicsForceGeneralStrength;
-
-                connection.GetComponent<Rigidbody>().AddForce(ForceVector);
+                
+                PullVector = PullVector * FastTanh(DistanceError) * vars.PhysicsForceGeneralStrength;
+                connection.GetComponent<Rigidbody>().AddForce(PullVector);
             }
         }
     }

@@ -2582,7 +2582,7 @@ GameObject:
   - component: {fileID: 1215610329}
   - component: {fileID: 1215610328}
   - component: {fileID: 1215610327}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: mould
   m_TagString: node
   m_Icon: {fileID: 0}
