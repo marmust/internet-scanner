@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4366756, g: 0.48427194, b: 0.5645252, a: 1}
+  m_IndirectSpecularColor: {r: 0.4366757, g: 0.48427194, b: 0.5645252, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1967,7 +1967,7 @@ MonoBehaviour:
   PhysicsForceGeneralStrength: 35.41
   ForeignNodeInteractionRange: 5
   MinimalChildDistance: 5
-  ChildDistanceConnectionsEffect: 1
+  ChildDistanceConnectionsEffect: 2
   TanhSoften: 1
   ColorMode: 0
   SecondsPerPhysicsUpdate: 0
