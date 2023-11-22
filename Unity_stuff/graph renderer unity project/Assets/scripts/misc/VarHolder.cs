@@ -1,5 +1,4 @@
 using Assets.scripts.misc;
-using System.ComponentModel;
 using UnityEngine;
 
 public class VarHolder : MonoBehaviour
@@ -20,7 +19,7 @@ public class VarHolder : MonoBehaviour
 
     // for player to control
     [Tooltip("The coloring mode for the nodes:" +
-        "\nin_range - Far away nodes appear faded." +
+        "\nin_range - Nodes in physics range are red." +
         "\nby_branch - Nodes inherit the color of their parent." +
         "\nby_relation - Nodes' color will mutate over time")]
     public ColorMode ColorMode = ColorMode.in_range;

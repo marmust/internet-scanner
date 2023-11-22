@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,7 @@ namespace Assets.scripts.misc
     public enum ColorMode
     {
         in_range,
-        by_branch,
-        by_relation
+        is_scanned,
+        none
     }
 }

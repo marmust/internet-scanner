@@ -6,47 +6,82 @@ public class NodeColorHandler : MonoBehaviour
     public SpriteRenderer sprite;
     public LineRenderer linerenderer;
     public VarHolder vars;
-    public NodePhysicsHandler physics_handler;
+    public NodePhysicsHandler PhysicsHandler;
+    public NodeStructureHandler StructureHandler;
+
+    public ColorMode ColorModeSwitchFlag;
 
     private void Awake()
     {
         vars = GameObject.Find("Main Camera").GetComponent<VarHolder>();
         sprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
         linerenderer = gameObject.GetComponent<LineRenderer>();
-        physics_handler = gameObject.GetComponent<NodePhysicsHandler>();
-    }
 
-    public void set_color(Color color)
+        PhysicsHandler = gameObject.GetComponent<NodePhysicsHandler>();
+        StructureHandler = gameObject.GetComponent<NodeStructureHandler>();
+
+        ColorModeSwitchFlag = vars.ColorMode;
+
+        // take care of newborn nodes (so when they spawn they immediatly get correct color)
+        // (without waiting for colormode switch)
+        UpdateColors();
+  }
+
+    public void SetColor(Color color, bool ChangeLinerenderer = true)
     {
         sprite.color = color;
-        linerenderer.startColor = color;
-        linerenderer.endColor = color;
+
+        if (ChangeLinerenderer)
+        {
+            linerenderer.startColor = color;
+            linerenderer.endColor = color;
+        }
     }
 
     private void Update()
     {
+        // detect colormode switch
+        if (ColorModeSwitchFlag != vars.ColorMode)
+        {
+            ColorModeSwitchFlag = vars.ColorMode;
+            UpdateColors();
+        }
+    }
+
+    public void UpdateColors()
+    {
         if (vars.ColorMode == ColorMode.in_range)
         {
-            if (physics_handler.in_camera_physics_range)
+            if (PhysicsHandler.in_camera_physics_range)
             {
-                set_color(new Color(1.0f, 0.27f, 0.27f, 1.0f));
+                SetColor(new Color(1.0f, 0.27f, 0.27f, 1.0f));
             }
             else
             {
-                set_color(new Color(1.0f, 1.0f, 1.0f, 0.5f));
+                SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
             }
         }
 
-        //if (vars.ColorMode == ColorMode.by_branch)
-        //{
-        //    if (transform.parent != null)
-        //    {
-        //        set_color(transform.parent.getcomponent)
-        //    }
-        //}
+        if (vars.ColorMode == ColorMode.is_scanned)
+        {
+            SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+
+            if (StructureHandler.expanded)
+            {
+                SetColor(new Color(0.54f, 0.68f, 1.0f, 1.0f), false);
+            }
+            else
+            {
+                SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+            }
+        }
+
+        if (vars.ColorMode == ColorMode.none)
+        {
+            SetColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        }
+
     }
-
-
 
     // for later use:
     //public void propogate_by_branch_mode(Color parent_color)
@@ -57,7 +92,7 @@ public class NodeColorHandler : MonoBehaviour
     //    //    Mathf.Clamp01(parent_color.b + Random.Range(-vars.by_branch_mutaion_rate, vars.by_branch_mutaion_rate))
     //    //);
     //
-    //    //set_color(mutated_color);
+    //    //SetColor(mutated_color);
     //
     //    foreach (Transform child in transform)
     //    {
