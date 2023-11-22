@@ -90,7 +90,7 @@ public class NodePhysicsHandler : MonoBehaviour
     {
         if (in_camera_physics_range)
         {
-            //keep distance for connected nodes
+            ////keep distance for connected nodes
             foreach (GameObject connection in connections)
             {
                 if (connection != transform.parent)
@@ -99,8 +99,8 @@ public class NodePhysicsHandler : MonoBehaviour
                     float IdealDistance = LogLookup(connection.GetComponent<NodeStructureHandler>().connections.Count() +
                                           vars.MinimalChildDistance) *
                                           vars.ChildDistanceConnectionsEffect;
-
-
+            
+            
                     float DistanceError = Vector3.Distance(connection.transform.position, transform.position) - IdealDistance;
                     Vector3 PullVector = transform.position - connection.transform.position;
                 
@@ -108,6 +108,31 @@ public class NodePhysicsHandler : MonoBehaviour
                     connection.GetComponent<Rigidbody>().AddForce(PullVector);
                     // --[]--
                     //SelfRB.AddForce(-PullVector);
+                }
+            }
+
+            // repel close nodes
+            Collider[] colliders = Physics.OverlapSphere(transform.position, vars.RepulsionRadius);
+
+            foreach(Collider intruder in colliders)
+            {
+                if (intruder.CompareTag("node") &&
+                    intruder.name != "mould" &&
+                    intruder.gameObject != gameObject)
+                {
+                    Vector3 pushDirection = intruder.transform.position - transform.position;
+                    float distance = pushDirection.magnitude; // Calculate the distance between nodes
+
+                    float softeningFactor = 1.0f; // Adjust this factor for the softness of repulsion
+
+                    // Calculate the repulsion force based on the inverse square law
+                    float forceMagnitude = vars.PhysicsForceGeneralStrength / (distance * distance * softeningFactor);
+
+                    Vector3 repulsionForce = pushDirection.normalized * forceMagnitude;
+
+                    intruder.gameObject.GetComponent<Rigidbody>().AddForce(repulsionForce);
+                    // Apply force to the other node as well if desired
+                    // intruder.gameObject.GetComponent<Rigidbody>().AddForce(-repulsionForce);
                 }
             }
         }

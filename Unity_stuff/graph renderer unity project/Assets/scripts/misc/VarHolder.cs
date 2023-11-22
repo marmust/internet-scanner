@@ -15,6 +15,7 @@ public class VarHolder : MonoBehaviour
     public float PhysicsForceGeneralStrength;
     public int MinimalChildDistance;
     public float ChildDistanceConnectionsEffect;
+    public float RepulsionRadius;
     public float TanhSoften;
 
     // for player to control
