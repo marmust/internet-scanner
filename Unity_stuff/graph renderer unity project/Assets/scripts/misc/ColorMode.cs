@@ -10,6 +10,7 @@ namespace Assets.scripts.misc
     {
         in_range,
         is_scanned,
+        url_length,
         none
     }
 }

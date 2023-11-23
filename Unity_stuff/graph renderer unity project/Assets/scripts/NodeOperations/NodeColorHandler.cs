@@ -1,5 +1,8 @@
 using Assets.scripts.misc;
+using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NodeColorHandler : MonoBehaviour
 {
@@ -9,7 +12,7 @@ public class NodeColorHandler : MonoBehaviour
     public NodePhysicsHandler PhysicsHandler;
     public NodeStructureHandler StructureHandler;
 
-    public ColorMode ColorModeSwitchFlag;
+    public Assets.scripts.misc.ColorMode ColorModeSwitchFlag;
 
     private void Awake()
     {
@@ -50,7 +53,7 @@ public class NodeColorHandler : MonoBehaviour
 
     public void UpdateColors()
     {
-        if (vars.ColorMode == ColorMode.in_range)
+        if (vars.ColorMode == Assets.scripts.misc.ColorMode.in_range)
         {
             if (PhysicsHandler.in_camera_physics_range)
             {
@@ -62,7 +65,7 @@ public class NodeColorHandler : MonoBehaviour
             }
         }
 
-        if (vars.ColorMode == ColorMode.is_scanned)
+        if (vars.ColorMode == Assets.scripts.misc.ColorMode.is_scanned)
         {
             SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
 
@@ -76,7 +79,19 @@ public class NodeColorHandler : MonoBehaviour
             }
         }
 
-        if (vars.ColorMode == ColorMode.none)
+        if (vars.ColorMode == Assets.scripts.misc.ColorMode.url_length)
+        {
+            if (gameObject.name != "mould")
+            {
+                // length - hue function: \frac{1}{0.5\max\left(x,\ 20\right)-f}   <<< copy paste to desmos (f=9)
+                int length = StructureHandler.node_url.Length;
+                float hue = 1 / (0.1f * Math.Max(length, 20) - 1.0f);
+                
+                SetColor(new Color(0.0f, 1.0f, 0.3f, hue));
+            }
+        }
+
+        if (vars.ColorMode == Assets.scripts.misc.ColorMode.none)
         {
             SetColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
         }
