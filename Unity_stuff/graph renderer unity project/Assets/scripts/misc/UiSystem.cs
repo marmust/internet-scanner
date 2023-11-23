@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class UiSystem : MonoBehaviour
 {
@@ -22,11 +23,28 @@ public class UiSystem : MonoBehaviour
     public TextMeshProUGUI max_physics_throttle_text;
     public TextMeshProUGUI min_physics_throttle_text;
 
+    public TextMeshProUGUI ColorModeName;
+    public TextMeshProUGUI ColorModePurpose;
+
     public RectTransform canvas_rctf;
     public RectTransform target_indicator_rctf;
     public RectTransform physics_update_rate_throttle;
 
     private Color throttle_red_shift;
+
+    // 0 - none (all white)
+    // 1 - in_range (red if in physics range)
+    // 2 - is_scanned (blue if has been scanned)
+    // 3 - url_length (the shorter the URL, the greener)
+    private List<string> ColorModeNames = new List<string> {"NONE", "IN_RANGE", "IS_SCANNED", "URL_LENGTH"};
+    private List<string> ColorModePurposes = new List<string> {"all white",
+                                                               "nodes is 'physics range' are red (helps with optimization)",
+                                                               "nodes that have been scanned are blue (helps with seeing 'explored regions')",
+                                                               "the shorter the URL, the greener (helps detect 'main' sites)"};
+    private List<Color> ColorModeAsociatedColors = new List<Color> {new Color(255f, 255f, 255f, 255f),
+                                                                    new Color(255f, 37f, 37f, 255f),
+                                                                    new Color(138f, 175f, 255f, 255f),
+                                                                    new Color(56f, 255f, 79f, 255f)};
 
     private void Awake()
     {
@@ -107,6 +125,12 @@ public class UiSystem : MonoBehaviour
             ChangeText(locked_node_cycle_text, "NULL", new Color(69f, 69f, 69f, 256f));
             ChangeText(locked_node_scanned_text, "NULL", new Color(69f, 69f, 69f, 256f));
         }
+    }
+
+    public void OnColorModeChange()
+    {
+        ChangeText(ColorModeName, ColorModeNames[vars.ColorModeIDX], ColorModeAsociatedColors[vars.ColorModeIDX]);
+        ChangeText(ColorModePurpose, ColorModePurposes[vars.ColorModeIDX], new Color(100f, 100f, 100f, 256f));
     }
 
     public void CollectUrlFromTextBox()

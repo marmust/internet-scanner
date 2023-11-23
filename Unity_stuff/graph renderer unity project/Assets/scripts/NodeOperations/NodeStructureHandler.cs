@@ -75,7 +75,7 @@ public class NodeStructureHandler : MonoBehaviour
         node_mould_object = GameObject.Find("mould");
         PhysicsHandler = gameObject.GetComponent<NodePhysicsHandler>();
         ColorHandler = gameObject.GetComponent<NodeColorHandler>();
-    }
+  }
 
     // !! FIRST READ expand_node() THEN READ void update() !!
 
@@ -244,7 +244,6 @@ public class NodeStructureHandler : MonoBehaviour
                 string host = separations[0];
                 separations.Remove(host);
                 
-
                 // We now have the host (hopefully)
                 // We can look it up on the DNS to see if it's valid
                 IPHostEntry dnslookup;
@@ -257,11 +256,7 @@ public class NodeStructureHandler : MonoBehaviour
                     scanError = "Invalid hostname";
                     return;
                 }
-
-                
                 node_url = $"https://{host}/{String.Join("/", separations)}/";
-
-
             }
             else
             {

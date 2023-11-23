@@ -1,4 +1,3 @@
-using Assets.scripts.misc;
 using UnityEngine;
 
 public class VarHolder : MonoBehaviour
@@ -17,12 +16,17 @@ public class VarHolder : MonoBehaviour
     public float RepulsionRadius;
     public float TanhSoften;
 
-    // for player to control
-    [Tooltip("The coloring mode for the nodes:" +
-        "\nin_range - Nodes in physics range are red." +
-        "\nby_branch - Nodes inherit the color of their parent." +
-        "\nby_relation - Nodes' color will mutate over time")]
-    public ColorMode ColorMode = ColorMode.in_range;
+  // for player to control
+  [Tooltip("The coloring mode for the nodes:" +
+      "\nin_range - Nodes in physics range are red." +
+      "\nby_branch - Nodes inherit the color of their parent." +
+      "\nby_relation - Nodes' color will mutate over time")]
+
+    // 0 - none (all white)
+    // 1 - in_range (red if in physics range)
+    // 2 - is_scanned (blue if has been scanned)
+    // 3 - url_length (the shorter the URL, the greener)
+    public int ColorModeIDX = 0;
     [HideInInspector]
     public float SecondsPerPhysicsUpdate;
     [Range(0.01f,1f)]

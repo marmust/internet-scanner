@@ -1,4 +1,3 @@
-using Assets.scripts.misc;
 using System;
 using TMPro;
 using UnityEngine;
@@ -12,7 +11,8 @@ public class NodeColorHandler : MonoBehaviour
     public NodePhysicsHandler PhysicsHandler;
     public NodeStructureHandler StructureHandler;
 
-    public Assets.scripts.misc.ColorMode ColorModeSwitchFlag;
+    private float ColorRefreshCooldown = 0.1f;
+    //private float lastUpdateTime = Time.time;
 
     private void Awake()
     {
@@ -22,15 +22,9 @@ public class NodeColorHandler : MonoBehaviour
 
         PhysicsHandler = gameObject.GetComponent<NodePhysicsHandler>();
         StructureHandler = gameObject.GetComponent<NodeStructureHandler>();
+    }
 
-        ColorModeSwitchFlag = vars.ColorMode;
-
-        // take care of newborn nodes (so when they spawn they immediatly get correct color)
-        // (without waiting for colormode switch)
-        UpdateColors();
-  }
-
-    public void SetColor(Color color, bool ChangeLinerenderer = true)
+  public void SetColor(Color color, bool ChangeLinerenderer = true)
     {
         sprite.color = color;
 
@@ -43,60 +37,66 @@ public class NodeColorHandler : MonoBehaviour
 
     private void Update()
     {
-        // detect colormode switch
-        if (ColorModeSwitchFlag != vars.ColorMode)
-        {
-            ColorModeSwitchFlag = vars.ColorMode;
+        //if (Time.time - lastUpdateTime >= ColorRefreshCooldown)
+        //{
             UpdateColors();
-        }
+        //    lastUpdateTime = Time.time;
+        //}
     }
+
+    // 0 - none (all white)
+    // 1 - in_range (red if in physics range)
+    // 2 - is_scanned (blue if has been scanned)
+    // 3 - url_length (the shorter the URL, the greener)
 
     public void UpdateColors()
-    {
-        if (vars.ColorMode == Assets.scripts.misc.ColorMode.in_range)
-        {
-            if (PhysicsHandler.in_camera_physics_range)
-            {
-                SetColor(new Color(1.0f, 0.27f, 0.27f, 1.0f));
-            }
-            else
-            {
-                SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
-            }
-        }
+      {
+          if (vars.ColorModeIDX == 1)
+          {
+              if (PhysicsHandler.in_camera_physics_range)
+              {
+                  SetColor(new Color(1.0f, 0.27f, 0.27f, 1.0f));
+              }
+              else
+              {
+                  SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+              }
+          }
 
-        if (vars.ColorMode == Assets.scripts.misc.ColorMode.is_scanned)
-        {
-            SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+          if (vars.ColorModeIDX == 2)
+          {
+              SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
 
-            if (StructureHandler.expanded)
-            {
-                SetColor(new Color(0.54f, 0.68f, 1.0f, 1.0f), false);
-            }
-            else
-            {
-                SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
-            }
-        }
+              if (StructureHandler.expanded)
+              {
+                  SetColor(new Color(0.54f, 0.68f, 1.0f, 1.0f), false);
+              }
+              else
+              {
+                  SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+              }
+          }
 
-        if (vars.ColorMode == Assets.scripts.misc.ColorMode.url_length)
-        {
-            if (gameObject.name != "mould")
-            {
-                // length - hue function: \frac{1}{0.5\max\left(x,\ 20\right)-f}   <<< copy paste to desmos (f=9)
-                int length = StructureHandler.node_url.Length;
-                float hue = 1 / (0.1f * Math.Max(length, 20) - 1.0f);
+          if (vars.ColorModeIDX == 3)
+          {
+              if (gameObject.name != "mould")
+              {
+                  SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+
+                  // length - hue function: \frac{1}{0.2\max\left(x,\ 20\right)-f}   <<< copy paste to desmos (f=3)
+                  int length = StructureHandler.node_url.Length;
+                  float hue = 1 / (0.2f * Math.Max(length, 30) - 5);
                 
-                SetColor(new Color(0.0f, 1.0f, 0.3f, hue));
-            }
-        }
+                  SetColor(new Color(0.3f, 1.0f, 0.3f, hue), false);
+              }
+          }
 
-        if (vars.ColorMode == Assets.scripts.misc.ColorMode.none)
-        {
-            SetColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
-        }
+          if (vars.ColorModeIDX == 0)
+          {
+              SetColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+          }
 
-    }
+      }
 
     // for later use:
     //public void propogate_by_branch_mode(Color parent_color)

@@ -5,6 +5,8 @@ public class InputSystem : MonoBehaviour
 {
     public List<Transform> HoldOnTo;
     public List<Vector3> InitPositions;
+    public VarHolder vars;
+    public UiSystem YouISystem;
 
     private float is_boosting = 1;
     private float totalXRotation = 0f;
@@ -20,10 +22,21 @@ public class InputSystem : MonoBehaviour
     void Update()
     {
         // handle physics throttle
-        VarHolder vars = GetComponent<VarHolder>();
         if (vars.SecondsPerPhysicsUpdate <= vars.SlowestPhysicsUpdates)
         {
             vars.SecondsPerPhysicsUpdate += (vars.SlowestPhysicsUpdates - vars.SecondsPerPhysicsUpdate + 1) / 2f * Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            vars.ColorModeIDX = (vars.ColorModeIDX + 1) % 4;
+            YouISystem.OnColorModeChange();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            vars.ColorModeIDX = (vars.ColorModeIDX + 3) % 4;
+            YouISystem.OnColorModeChange();
         }
 
         if (Input.GetKey(KeyCode.G))
