@@ -14,8 +14,8 @@ public class PauseMenuSystem : MonoBehaviour
     public void GoMainMenu()
     {
         // load main menu scene
-        SceneManager.LoadScene(1);
-        // unload graph scene
+        SceneManager.LoadScene(0);
+        // unload currently active scene
         SceneManager.UnloadScene(SceneManager.GetActiveScene());
     }
 

@@ -6,9 +6,9 @@ public class MainMenu : MonoBehaviour
     public void GoGraphButton()
     {
         // load graph scene
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
         // unload main menu scene
-        SceneManager.UnloadScene(1);
+        SceneManager.UnloadScene(0);
     }
 
     public void GoCreditsButton()
@@ -16,7 +16,7 @@ public class MainMenu : MonoBehaviour
         // load credits scene
         SceneManager.LoadScene(2);
         // unload main menu scene
-        SceneManager.UnloadScene(1);
+        SceneManager.UnloadScene(0);
     }
 
     public void GoQuitButton()
