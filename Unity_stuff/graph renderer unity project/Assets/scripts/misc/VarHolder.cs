@@ -50,5 +50,11 @@ public class VarHolder : MonoBehaviour
     [HideInInspector]
     public bool IsTypingUrl;
 
-    // for later use: public float by_branch_mutaion_rate = 0.1f;
+    // to check if the player is currently paused
+    // im aware its misspelled, i realized this after changing almost every script to work with it
+    // we are past the point of no return D:
+    [HideInInspector]
+    public bool IsPuased;
+
+  // for later use: public float by_branch_mutaion_rate = 0.1f;
 }

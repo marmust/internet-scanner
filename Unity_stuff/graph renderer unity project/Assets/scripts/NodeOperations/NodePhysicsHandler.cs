@@ -59,29 +59,32 @@ public class NodePhysicsHandler : MonoBehaviour
 
     private void Update()
     {
-        // make sure that the texture of the node is looking at the camera
-        // that texture can be found as one of the children in the nodes (first one in the list)
-        transform.GetChild(0).transform.LookAt(vars.transform);
-
-        // mould is an object used to clone the nodes
-        // its found under the camera object
-        // we dont want it to move around so dont apply physics to it
-        if (gameObject.name != "mould")
+        if (!vars.IsPuased)
         {
-            // check if its the root node in a system
-            // because  clones always have a parent
-            if (transform.parent == null)
-            {
-                // if it is the root node we lock it in its initial position (check void awake()) so the graph wont fly away by accident
-                transform.position = init_cords;
-            }
+            // make sure that the texture of the node is looking at the camera
+            // that texture can be found as one of the children in the nodes (first one in the list)
+            transform.GetChild(0).transform.LookAt(vars.transform);
 
-            // if its not the root node then apply the normal physics loop
-            // check if its time to update the physics (depends on the throttle)
-            if (Time.time >= previous_update_time + vars.SecondsPerPhysicsUpdate)
+            // mould is an object used to clone the nodes
+            // its found under the camera object
+            // we dont want it to move around so dont apply physics to it
+            if (gameObject.name != "mould")
             {
-                previous_update_time = Time.time;
-                PhysicsLoop();
+                // check if its the root node in a system
+                // because  clones always have a parent
+                if (transform.parent == null)
+                {
+                    // if it is the root node we lock it in its initial position (check void awake()) so the graph wont fly away by accident
+                    transform.position = init_cords;
+                }
+
+                // if its not the root node then apply the normal physics loop
+                // check if its time to update the physics (depends on the throttle)
+                if (Time.time >= previous_update_time + vars.SecondsPerPhysicsUpdate)
+                {
+                    previous_update_time = Time.time;
+                    PhysicsLoop();
+                }
             }
         }
     }
