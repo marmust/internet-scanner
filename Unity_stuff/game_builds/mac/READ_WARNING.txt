@@ -1,5 +1,5 @@
-this "game" build is untested, because i dont have a mac.
-and also i dont even know hwat a mac build should look like.
+this "game" build is untested, because i don't have a mac.
+and also i don't even know what a mac build should look like.
 
-if you have a mac, please raise an issue on github and tell me if it works / doesnt (if so whats wrong)
+if you have a mac, please raise an issue on github and tell me if it works / doesn't (if so whats wrong)
 thank you :)
