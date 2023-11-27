@@ -39,13 +39,13 @@ public class InputSystem : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
-                    vars.ColorModeIDX = (vars.ColorModeIDX + 1) % 4;
+                    vars.ColorModeIDX = (vars.ColorModeIDX + 1) % 5;
                     YouISystem.OnColorModeChange();
                 }
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    vars.ColorModeIDX = (vars.ColorModeIDX + 3) % 4;
+                    vars.ColorModeIDX = (vars.ColorModeIDX + 4) % 5;
                     YouISystem.OnColorModeChange();
                 }
             }

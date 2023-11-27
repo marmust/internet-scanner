@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -24,7 +25,7 @@ public class NodeColorHandler : MonoBehaviour
         StructureHandler = gameObject.GetComponent<NodeStructureHandler>();
     }
 
-  public void SetColor(Color color, bool ChangeLinerenderer = true)
+    public void SetColor(Color color, bool ChangeLinerenderer = true)
     {
         sprite.color = color;
 
@@ -48,6 +49,7 @@ public class NodeColorHandler : MonoBehaviour
     // 1 - in_range (red if in physics range)
     // 2 - is_scanned (blue if has been scanned)
     // 3 - url_length (the shorter the URL, the greener)
+    // 4 - by_branch (mutate the color every connection, each branch has a different color)
 
     public void UpdateColors()
       {
@@ -91,32 +93,43 @@ public class NodeColorHandler : MonoBehaviour
               }
           }
 
+          if (vars.ColorModeIDX == 4)
+          {
+              if (transform.parent == null)
+              {
+                  Color RandomColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+                  Color NormalizedColor = RandomColor / RandomColor.maxColorComponent;    
+
+                  PassDownMutatedColor(NormalizedColor);
+              }
+          }
+
           if (vars.ColorModeIDX == 0)
           {
               SetColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
           }
 
-      }
+    }
 
-    // for later use:
-    //public void propogate_by_branch_mode(Color parent_color)
-    //{
-    //    //Color mutated_color = new Color(
-    //    //    Mathf.Clamp01(parent_color.r + Random.Range(-vars.by_branch_mutaion_rate, vars.by_branch_mutaion_rate)),
-    //    //    Mathf.Clamp01(parent_color.g + Random.Range(-vars.by_branch_mutaion_rate, vars.by_branch_mutaion_rate)),
-    //    //    Mathf.Clamp01(parent_color.b + Random.Range(-vars.by_branch_mutaion_rate, vars.by_branch_mutaion_rate))
-    //    //);
-    //
-    //    //SetColor(mutated_color);
-    //
-    //    foreach (Transform child in transform)
-    //    {
-    //        NodeColorHandler child_color_handler = child.GetComponent<CodeColorHandler>();
-    //
-    //        if (child_color_handler != null)
-    //        {
-    //            child_color_handler.propogate_by_branch_mode(mutated_color);
-    //        }
-    //    }
-    //}
+    // recieve and pass down the mutated color if colormode is by_branch
+    public void PassDownMutatedColor(Color PassDownColor)
+    {
+        // mutate the color
+        Color MutatedColor = PassDownColor + new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+        // normalize the color so it goes between 0 and 1
+        Color NormalizedColor = MutatedColor / MutatedColor.maxColorComponent;
+        // set our own color to that
+        SetColor(NormalizedColor);
+
+        // pass the mutated color down to the children
+        List<Transform> ChildList = new List<Transform>();
+        foreach (Transform CurrentChild in ChildList)
+        {
+            // check that we didnt hit the rotating texture
+            if (!CurrentChild.CompareTag("node"))
+            {
+                CurrentChild.gameObject.GetComponent<NodeColorHandler>().PassDownMutatedColor(NormalizedColor);
+            }
+        }
+    }
 }

@@ -26,6 +26,7 @@ public class VarHolder : MonoBehaviour
     // 1 - in_range (red if in physics range)
     // 2 - is_scanned (blue if has been scanned)
     // 3 - url_length (the shorter the URL, the greener)
+    // 4 - by_branch (mutate the color every connection, each branch has a different color)
     public int ColorModeIDX = 0;
     [HideInInspector]
     public float SecondsPerPhysicsUpdate;
