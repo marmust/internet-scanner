@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using System.Linq;
 using UnityEngine.UIElements;
 
 public class NodeColorHandler : MonoBehaviour
@@ -12,8 +13,7 @@ public class NodeColorHandler : MonoBehaviour
     public NodePhysicsHandler PhysicsHandler;
     public NodeStructureHandler StructureHandler;
 
-    private float ColorRefreshCooldown = 0.1f;
-    //private float lastUpdateTime = Time.time;
+    private int ColorModeRefreshFlag = -1;
 
     private void Awake()
     {
@@ -38,11 +38,11 @@ public class NodeColorHandler : MonoBehaviour
 
     private void Update()
     {
-        //if (Time.time - lastUpdateTime >= ColorRefreshCooldown)
-        //{
+        if (ColorModeRefreshFlag != vars.ColorModeIDX)
+        {
             UpdateColors();
-        //    lastUpdateTime = Time.time;
-        //}
+            ColorModeRefreshFlag = vars.ColorModeIDX;
+        }
     }
 
     // 0 - none (all white)
@@ -98,7 +98,7 @@ public class NodeColorHandler : MonoBehaviour
               if (transform.parent == null)
               {
                   Color RandomColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
-                  Color NormalizedColor = RandomColor / RandomColor.maxColorComponent;    
+                  Color NormalizedColor = RandomColor / RandomColor.maxColorComponent;
 
                   PassDownMutatedColor(NormalizedColor);
               }
@@ -115,20 +115,21 @@ public class NodeColorHandler : MonoBehaviour
     public void PassDownMutatedColor(Color PassDownColor)
     {
         // mutate the color
-        Color MutatedColor = PassDownColor + new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+        Color MutatedColor = PassDownColor + new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * vars.ColorMutationRate;
         // normalize the color so it goes between 0 and 1
         Color NormalizedColor = MutatedColor / MutatedColor.maxColorComponent;
         // set our own color to that
         SetColor(NormalizedColor);
 
         // pass the mutated color down to the children
-        List<Transform> ChildList = new List<Transform>();
-        foreach (Transform CurrentChild in ChildList)
+        var ChildList = gameObject.transform.Cast<Transform>().Select(t => t.gameObject).ToList();
+
+        foreach (Transform childTransform in gameObject.transform)
         {
-            // check that we didnt hit the rotating texture
-            if (!CurrentChild.CompareTag("node"))
+            // Check that we didn't hit the rotating texture
+            if (childTransform.CompareTag("node"))
             {
-                CurrentChild.gameObject.GetComponent<NodeColorHandler>().PassDownMutatedColor(NormalizedColor);
+                childTransform.GetComponent<NodeColorHandler>().PassDownMutatedColor(NormalizedColor);
             }
         }
     }

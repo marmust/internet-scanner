@@ -28,6 +28,8 @@ public class VarHolder : MonoBehaviour
     // 3 - url_length (the shorter the URL, the greener)
     // 4 - by_branch (mutate the color every connection, each branch has a different color)
     public int ColorModeIDX = 0;
+    // only for by_branch colormode
+    public float ColorMutationRate = 0.1f;
     [HideInInspector]
     public float SecondsPerPhysicsUpdate;
     [Range(0.01f,1f)]
@@ -56,6 +58,4 @@ public class VarHolder : MonoBehaviour
     // we are past the point of no return D:
     [HideInInspector]
     public bool IsPuased;
-
-  // for later use: public float by_branch_mutaion_rate = 0.1f;
 }

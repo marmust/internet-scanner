@@ -36,15 +36,18 @@ public class UiSystem : MonoBehaviour
     // 1 - in_range (red if in physics range)
     // 2 - is_scanned (blue if has been scanned)
     // 3 - url_length (the shorter the URL, the greener)
-    private List<string> ColorModeNames = new List<string> {"NONE", "IN_RANGE", "IS_SCANNED", "URL_LENGTH"};
+    // 4 - by_branch (mutate the color every connection, each branch has a different color)
+    private List<string> ColorModeNames = new List<string> {"NONE", "IN_RANGE", "IS_SCANNED", "URL_LENGTH", "BY_BRANCH"};
     private List<string> ColorModePurposes = new List<string> {"all white",
                                                                "nodes is 'physics range' are red (helps with optimization)",
                                                                "nodes that have been scanned are blue (helps with seeing 'explored regions')",
-                                                               "the shorter the URL, the greener (helps detect 'main' sites)"};
+                                                               "the shorter the URL, the greener (helps detect 'main' sites)",
+                                                               "colors mutate over connections, (helps detect webpages that are closely connected)"};
     private List<Color> ColorModeAsociatedColors = new List<Color> {new Color(255f, 255f, 255f, 255f),
                                                                     new Color(255f, 37f, 37f, 255f),
                                                                     new Color(138f, 175f, 255f, 255f),
-                                                                    new Color(56f, 255f, 79f, 255f)};
+                                                                    new Color(56f, 255f, 79f, 255f),
+                                                                    new Color(134f, 41f, 255f, 255f)};
 
     private void Awake()
     {

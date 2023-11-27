@@ -116,7 +116,7 @@ public class NodePhysicsHandler : MonoBehaviour
 
             // repel close nodes
             Collider[] colliders = Physics.OverlapSphere(transform.position, vars.RepulsionRadius);
-
+            
             foreach(Collider intruder in colliders)
             {
                 if (intruder.CompareTag("node") &&
@@ -125,17 +125,17 @@ public class NodePhysicsHandler : MonoBehaviour
                 {
                     Vector3 pushDirection = intruder.transform.position - transform.position;
                     float distance = pushDirection.magnitude; // Calculate the distance between nodes
-
+            
                     float softeningFactor = 1.0f; // Adjust this factor for the softness of repulsion
-
+            
                     // Calculate the repulsion force based on the inverse square law
                     float forceMagnitude = vars.PhysicsForceGeneralStrength / (distance * distance * softeningFactor);
-
+            
                     Vector3 repulsionForce = pushDirection.normalized * forceMagnitude;
-
-                    intruder.gameObject.GetComponent<Rigidbody>().AddForce(repulsionForce);
+            
+                    intruder.gameObject.GetComponent<Rigidbody>().AddForce(repulsionForce * 0.5f);
                     // Apply force to the other node as well if desired
-                    // intruder.gameObject.GetComponent<Rigidbody>().AddForce(-repulsionForce);
+                    SelfRB.AddForce(-repulsionForce);
                 }
             }
         }

@@ -2566,9 +2566,10 @@ MonoBehaviour:
   PhysicsForceGeneralStrength: 35.41
   MinimalChildDistance: 3
   ChildDistanceConnectionsEffect: 5
-  RepulsionRadius: 5
+  RepulsionRadius: 10
   TanhSoften: 0.15
   ColorModeIDX: 0
+  ColorMutationRate: 0.74
   SecondsPerPhysicsUpdate: 0
   FastestPhysicsUpdates: 0.1
   SlowestPhysicsUpdates: 10
