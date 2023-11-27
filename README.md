@@ -7,8 +7,8 @@ project is fully open source, and you can use the code for any purpose (it will 
 
 To run the build:
 
-1. Find and download build file for your system in [game_builds](https://github.com/marmust/internet-scanner/tree/main/Unity_stuff/game_builds) folder. 
-2. Unzip downloaded file to new folder
+1. Download Windows release from the [Releases](https://github.com/marmust/internet-scanner/releases).
+2. Unzip the downloaded file to a new folder
 3. Run `graph renderer.exe`
 3. You may get an error saying "Windows Protected Your PC". This is normal, click the `more options` link, then click the `Run Anyway` button.
 
