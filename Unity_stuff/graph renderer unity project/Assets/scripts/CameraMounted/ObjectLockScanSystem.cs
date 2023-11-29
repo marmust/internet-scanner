@@ -21,9 +21,12 @@ public class ObjectLockScanSystem : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                targeted_object = hit.collider.gameObject;
-                ui_system.locked_on_node = true;
-                ui_system.target_node = targeted_object;
+                if (hit.collider.CompareTag("node"))
+                {
+                    targeted_object = hit.collider.gameObject;
+                    ui_system.locked_on_node = true;
+                    ui_system.target_node = targeted_object;
+                }
             }
             else
             {

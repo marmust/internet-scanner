@@ -19,7 +19,15 @@ public class MainMenu : MonoBehaviour
         SceneManager.UnloadScene(0);
     }
 
-    public void GoQuitButton()
+    public void GoTutorialButton()
+    {
+        // load Tutorial scene
+        SceneManager.LoadScene(3);
+        // unload main menu scene
+        SceneManager.UnloadScene(0);
+    }
+
+  public void GoQuitButton()
     {
         print("exiting");
         Application.Quit();

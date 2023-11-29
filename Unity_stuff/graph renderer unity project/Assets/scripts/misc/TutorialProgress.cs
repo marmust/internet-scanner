@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class TutorialProgress : MonoBehaviour
 {
-    public ParticleSystem particles;
+    public GameObject ParticleEmmiter;
 
     public List<GameObject> ToDisableOnContact;
     public List<GameObject> ToEnableOnContact;
@@ -15,7 +15,8 @@ public class TutorialProgress : MonoBehaviour
         if (other.CompareTag("MainCamera"))
         {
             // do particles
-            particles.Play();
+            ParticleEmmiter.transform.position = transform.position;
+            ParticleEmmiter.GetComponent<ParticleSystem>().Play();
 
             // first enable then disable
             // (because might disable self and stop running idk)
