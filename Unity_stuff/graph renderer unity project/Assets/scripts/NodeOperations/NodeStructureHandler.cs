@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System;
 using System.Net;
+using TMPro;
 
 public class NodeStructureHandler : MonoBehaviour
 {
@@ -151,8 +152,7 @@ public class NodeStructureHandler : MonoBehaviour
     public void AttachUrls(List<string> connected_urls){
         // make sure to update the settings (so player cant spam the same node)
         expanded = true;
-        ColorHandler.UpdateColors();
-        
+        ColorHandler.ColorModeRefreshFlag = -1;
         // after retrieving all of the links connected to THIS node, we do the following operations:
         foreach (string url in connected_urls)
         {

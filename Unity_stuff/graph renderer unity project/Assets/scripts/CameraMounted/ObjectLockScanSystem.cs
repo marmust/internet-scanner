@@ -14,7 +14,7 @@ public class ObjectLockScanSystem : MonoBehaviour
 
     void Update()
     {
-        if (!vars.IsPuased)
+        if (!vars.IsPaused)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

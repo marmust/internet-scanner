@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.43667564, g: 0.48427135, b: 0.5645233, a: 1}
+  m_IndirectSpecularColor: {r: 0.4366757, g: 0.48427194, b: 0.5645252, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2569,7 +2569,7 @@ MonoBehaviour:
   RepulsionRadius: 10
   TanhSoften: 0.15
   ColorModeIDX: 0
-  ColorMutationRate: 0.74
+  ColorMutationRate: 0.42
   SecondsPerPhysicsUpdate: 0
   FastestPhysicsUpdates: 0.1
   SlowestPhysicsUpdates: 10
@@ -3659,6 +3659,7 @@ MonoBehaviour:
   vars: {fileID: 0}
   PhysicsHandler: {fileID: 0}
   StructureHandler: {fileID: 0}
+  ColorModeRefreshFlag: -1
 --- !u!1 &1216812555
 GameObject:
   m_ObjectHideFlags: 0
