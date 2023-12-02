@@ -59,7 +59,7 @@ public class NodePhysicsHandler : MonoBehaviour
 
     private void Update()
     {
-        if (!vars.IsPuased)
+        if (!vars.IsPaused)
         {
             // make sure that the texture of the node is looking at the camera
             // that texture can be found as one of the children in the nodes (first one in the list)

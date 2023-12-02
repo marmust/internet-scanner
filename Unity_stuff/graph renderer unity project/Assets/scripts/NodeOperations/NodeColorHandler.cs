@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using System.Linq;
-using UnityEngine.UIElements;
+using Assets.scripts.misc;
 
 public class NodeColorHandler : MonoBehaviour
 {
@@ -13,7 +12,8 @@ public class NodeColorHandler : MonoBehaviour
     public NodePhysicsHandler PhysicsHandler;
     public NodeStructureHandler StructureHandler;
 
-    private int ColorModeRefreshFlag = -1;
+    [HideInInspector]
+    public int ColorModeRefreshFlag = -1;
 
     private void Awake()
     {
@@ -36,12 +36,19 @@ public class NodeColorHandler : MonoBehaviour
         }
     }
 
-    private void Update()
+    private bool updateColorsNextFrame = true;
+    private void FixedUpdate()
     {
-        if (ColorModeRefreshFlag != vars.ColorModeIDX)
-        {
+        if(updateColorsNextFrame) { 
             UpdateColors();
-            ColorModeRefreshFlag = vars.ColorModeIDX;
+            updateColorsNextFrame = false; 
+        }
+        if (ColorModeRefreshFlag != (int)vars.colorMode)
+        {
+            UnityEngine.Random.InitState((int)DateTime.Now.Subtract(DateTime.MinValue).TotalDays); // random seed will vary by day, uses min to make sure we don't underflow
+            //UpdateColors();
+            updateColorsNextFrame = true;
+            ColorModeRefreshFlag = (int)vars.colorMode;
         }
     }
 
@@ -53,71 +60,73 @@ public class NodeColorHandler : MonoBehaviour
 
     public void UpdateColors()
       {
-          if (vars.ColorModeIDX == 1)
-          {
-              if (PhysicsHandler.in_camera_physics_range)
-              {
-                  SetColor(new Color(1.0f, 0.27f, 0.27f, 1.0f));
-              }
-              else
-              {
-                  SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
-              }
-          }
 
-          if (vars.ColorModeIDX == 2)
-          {
-              SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+            SetColor(vars.colorMode);
+            switch ((ColorMode)vars.colorMode)
+            {
+                case ColorMode.IN_RANGE:
+                    if (PhysicsHandler.in_camera_physics_range)
+                    {
+                        SetColor(new Color(1.0f, 0.27f, 0.27f, 1.0f));
+                    }
+                    else
+                    {
+                        SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+                    }
+                    break;
+                case ColorMode.IS_SCANNED:
+                    SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+                    if (StructureHandler.expanded)
+                    {
+                        SetColor(new Color(0.54f, 0.68f, 1.0f, 1.0f), false);
+                    }
+                    else
+                    {
+                        SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+                    }
+                    break;
+                case ColorMode.URL_LENGTH:
+                    if (gameObject.name != "mould")
+                    {
+                        SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
+                        int length = StructureHandler.node_url.Length;
+                        float hue = 1 / (0.2f * Math.Max(length, 30) - 5);
+                        SetColor(new Color(0.3f, 1.0f, 0.3f, hue), false);
+                    }
+                    break;
+                case ColorMode.BY_BRANCH:
+                    mutateColor();
+                    break;
+                case ColorMode.BY_SITE:
+                    // Add code for BY_SITE color mode here
+                    break;
+                case ColorMode.NONE:
+                    SetColor((Color)vars.colorMode);
+                    break;
+        }
 
-              if (StructureHandler.expanded)
-              {
-                  SetColor(new Color(0.54f, 0.68f, 1.0f, 1.0f), false);
-              }
-              else
-              {
-                  SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
-              }
-          }
+    }
 
-          if (vars.ColorModeIDX == 3)
-          {
-              if (gameObject.name != "mould")
-              {
-                  SetColor(new Color(1.0f, 1.0f, 1.0f, 0.2f));
-
-                  // length - hue function: \frac{1}{0.2\max\left(x,\ 20\right)-f}   <<< copy paste to desmos (f=3)
-                  int length = StructureHandler.node_url.Length;
-                  float hue = 1 / (0.2f * Math.Max(length, 30) - 5);
-                
-                  SetColor(new Color(0.3f, 1.0f, 0.3f, hue), false);
-              }
-          }
-
-          if (vars.ColorModeIDX == 4)
-          {
-              if (transform.parent == null)
-              {
-                  Color RandomColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
-                  Color NormalizedColor = RandomColor / RandomColor.maxColorComponent;
-
-                  PassDownMutatedColor(NormalizedColor);
-              }
-          }
-
-          if (vars.ColorModeIDX == 0)
-          {
-              SetColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
-          }
-
+    // made its own function so its easier to recalculate the color when scanning nodes
+    public void mutateColor()
+    {
+        if (transform.parent == null)
+        {
+            Color RandomColor = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+            PassDownMutatedColor(RandomColor);
+        }
     }
 
     // recieve and pass down the mutated color if colormode is by_branch
     public void PassDownMutatedColor(Color PassDownColor)
     {
         // mutate the color
-        Color MutatedColor = PassDownColor + new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * vars.ColorMutationRate;
+        Color MutatedColor = PassDownColor;
+        Color MutatedAmount = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * vars.ColorMutationRate;
+        MutatedColor += MutatedAmount;
+        MutatedColor.a = 1f;
         // normalize the color so it goes between 0 and 1
-        Color NormalizedColor = MutatedColor / MutatedColor.maxColorComponent;
+        Color NormalizedColor = MutatedColor / PassDownColor.maxColorComponent;
         // set our own color to that
         SetColor(NormalizedColor);
 

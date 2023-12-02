@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Assets.scripts.misc;
 
 public class InputSystem : MonoBehaviour
 {
@@ -24,10 +25,10 @@ public class InputSystem : MonoBehaviour
         // toggle pause
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            vars.IsPuased = !vars.IsPuased;
+            vars.IsPaused = !vars.IsPaused;
         }
 
-        if (!vars.IsPuased)
+        if (!vars.IsPaused)
         {
             // handle physics throttle
             if (vars.SecondsPerPhysicsUpdate <= vars.SlowestPhysicsUpdates)
@@ -39,13 +40,13 @@ public class InputSystem : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
-                    vars.ColorModeIDX = (vars.ColorModeIDX + 1) % 5;
+                    vars.colorMode--;
                     YouISystem.OnColorModeChange();
                 }
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    vars.ColorModeIDX = (vars.ColorModeIDX + 4) % 5;
+                    vars.colorMode++;
                     YouISystem.OnColorModeChange();
                 }
             }
@@ -118,7 +119,7 @@ public class InputSystem : MonoBehaviour
         }
 
         // handle mouse / cursor locking
-        if (vars.IsTypingUrl || vars.IsPuased)
+        if (vars.IsTypingUrl || vars.IsPaused)
         {
             Cursor.lockState = CursorLockMode.None;
         }

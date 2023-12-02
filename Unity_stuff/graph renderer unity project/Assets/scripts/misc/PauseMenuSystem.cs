@@ -8,7 +8,7 @@ public class PauseMenuSystem : MonoBehaviour
 
     private void Update()
     {
-        PauseMenuObject.active = vars.IsPuased;
+        PauseMenuObject.active = vars.IsPaused;
     }
 
     public void GoMainMenu()
@@ -21,6 +21,6 @@ public class PauseMenuSystem : MonoBehaviour
 
     public void ResumeGame()
     {
-        vars.IsPuased = !vars.IsPuased;
+        vars.IsPaused = !vars.IsPaused;
     }
 }

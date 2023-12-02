@@ -1,3 +1,4 @@
+using Assets.scripts.misc;
 using UnityEngine;
 
 public class VarHolder : MonoBehaviour
@@ -27,9 +28,11 @@ public class VarHolder : MonoBehaviour
     // 2 - is_scanned (blue if has been scanned)
     // 3 - url_length (the shorter the URL, the greener)
     // 4 - by_branch (mutate the color every connection, each branch has a different color)
-    public int ColorModeIDX = 0;
+    // 5 - by_site (mutate the color by the hash of the domain)
+    [HideInInspector]
+    public ColorModes colorMode = ColorMode.NONE;
     // only for by_branch colormode
-    public float ColorMutationRate = 0.1f;
+    public float ColorMutationRate = 0.42f;
     [HideInInspector]
     public float SecondsPerPhysicsUpdate;
     [Range(0.01f,1f)]
@@ -54,8 +57,6 @@ public class VarHolder : MonoBehaviour
     public bool IsTypingUrl;
 
     // to check if the player is currently paused
-    // im aware its misspelled, i realized this after changing almost every script to work with it
-    // we are past the point of no return D:
     [HideInInspector]
-    public bool IsPuased;
+    public bool IsPaused;
 }
