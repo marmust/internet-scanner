@@ -2568,7 +2568,6 @@ MonoBehaviour:
   ChildDistanceConnectionsEffect: 5
   RepulsionRadius: 10
   TanhSoften: 0.15
-  ColorModeIDX: 0
   ColorMutationRate: 0.42
   SecondsPerPhysicsUpdate: 0
   FastestPhysicsUpdates: 0.1
@@ -2578,7 +2577,8 @@ MonoBehaviour:
   RotationSpeed: 3
   BoostValue: 3
   IsTypingUrl: 0
-  IsPuased: 0
+  IsPaused: 0
+  IsCameraOn: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2611,6 +2611,7 @@ MonoBehaviour:
   InitPositions: []
   vars: {fileID: 963194229}
   YouISystem: {fileID: 808878397}
+  YouIObject: {fileID: 808878392}
 --- !u!1 &976267864
 GameObject:
   m_ObjectHideFlags: 0

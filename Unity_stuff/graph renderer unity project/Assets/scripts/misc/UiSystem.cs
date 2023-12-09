@@ -54,7 +54,7 @@ public class UiSystem : MonoBehaviour
     }
 
     private void Update()
-    {
+    { 
         throttle_red_shift = Color.Lerp(new Color(255f, 61f, 61f), new Color(255f, 255f, 255f), vars.SecondsPerPhysicsUpdate / vars.SlowestPhysicsUpdates);
 
         physics_update_rate_throttle.GetComponent<RawImage>().color = throttle_red_shift / 256;
@@ -73,7 +73,8 @@ public class UiSystem : MonoBehaviour
 
             ChangeText(locked_node_url_text, node.node_url, new Color(138f, 175f, 255f));
 
-            if (node.expanded) {
+            if (node.expanded)
+            {
                 ChangeText(locked_node_scanned_text, "SCANNED", new Color(54f, 255f, 97f));
 
                 if (node.is_cycle)
@@ -85,24 +86,34 @@ public class UiSystem : MonoBehaviour
                     ChangeText(locked_node_cycle_text, "NON CYCLICAL", new Color(138f, 175f, 255f));
                 }
             }
-            else {
+            else
+            {
                 string text;
-                if (node.scanning) {
-                    text = "SCANNING "+node.downloadProgress+"%";
-                } else {
-                    if (node.expanded) {
+                if (node.scanning)
+                {
+                    text = "SCANNING " + node.downloadProgress + "%";
+                }
+                else
+                {
+                    if (node.expanded)
+                    {
                         text = "SCANNED";
-                    } else {
-                        if (string.IsNullOrEmpty(node.scanError)) {
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(node.scanError))
+                        {
                             text = "NOT SCANNED";
-                        } else {
-                            text = "ERROR - "+node.scanError;
+                        }
+                        else
+                        {
+                            text = "ERROR - " + node.scanError;
                         }
                     }
                 }
                 ChangeText(locked_node_scanned_text, text, new Color(255f, 79f, 79f));
                 ChangeText(locked_node_cycle_text, "UNKOWN - SCAN REQUIRED", new Color(255f, 79f, 79f));
-                
+
             }
         }
         else

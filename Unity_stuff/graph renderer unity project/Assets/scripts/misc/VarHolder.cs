@@ -59,4 +59,8 @@ public class VarHolder : MonoBehaviour
     // to check if the player is currently paused
     [HideInInspector]
     public bool IsPaused;
+
+    // to check if camera mode is on
+    [HideInInspector]
+    public bool IsCameraOn;
 }
