@@ -8,6 +8,7 @@ public class InputSystem : MonoBehaviour
     public List<Vector3> InitPositions;
     public VarHolder vars;
     public UiSystem YouISystem;
+    public GameObject YouIObject;
 
     private float is_boosting = 1;
     private float totalXRotation = 0f;
@@ -126,6 +127,12 @@ public class InputSystem : MonoBehaviour
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            vars.IsCameraOn = !vars.IsCameraOn;
+            YouIObject.SetActive(vars.IsCameraOn);
         }
     }
 }
